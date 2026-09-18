@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8e9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mello Notes">
+  <meta name="description" content="A friendly, private notes app that turns messy thoughts into clear notes and actions.">
+  <title>Mello Notes</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell" data-theme="sunset">
+    <header class="app-header">
+      <div>
+        <p class="greeting" id="greeting">Morning 👋</p>
+        <h1 id="screenTitle">Hey, what’s up?</h1>
+      </div>
+      <button class="icon-button profile-button" id="settingsButton" aria-label="Open settings">
+        <svg aria-hidden="true"><use href="#icon-smile"></use></svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="capture-panel" id="capturePanel" aria-labelledby="newNoteLabel">
+        <span class="abstract-shape shape-a" aria-hidden="true"></span>
+        <span class="abstract-shape shape-b" aria-hidden="true"></span>
+        <span class="abstract-shape shape-c" aria-hidden="true"></span>
+        <div class="capture-heading">
+          <label id="newNoteLabel" for="noteInput">Drop your thought here</label>
+          <span class="ai-ready"><svg aria-hidden="true"><use href="#icon-sparkles"></use></svg>Smart ready</span>
+        </div>
+        <textarea id="noteInput" rows="3" placeholder="Write or say anything…" autocomplete="off"></textarea>
+        <div class="capture-actions">
+          <button class="mic-button" id="micButton" type="button" aria-label="Use iPhone dictation">
+            <svg aria-hidden="true"><use href="#icon-mic"></use></svg>
+          </button>
+          <button class="primary-button" id="organizeButton" type="button">
+            <svg aria-hidden="true"><use href="#icon-wand"></use></svg>
+            Tidy it up
+          </button>
+        </div>
+      </section>
+
+      <section id="notesView" class="view active-view" aria-label="Notes">
+        <div class="filter-row" role="group" aria-label="Filter notes">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="task">To-dos</button>
+          <button class="filter-chip" data-filter="idea">Ideas</button>
+          <button class="filter-chip" data-filter="scheduled">Later</button>
+        </div>
+        <div class="section-heading">
+          <h2>Your notes</h2>
+          <span id="noteCount">0 total</span>
+        </div>
+        <div class="note-grid" id="noteGrid"></div>
+        <div class="empty-state" id="notesEmpty" hidden>
+          <span class="empty-icon">💭</span>
+          <h3>Your thoughts will live here</h3>
+          <p>Write something above—even if it is messy.</p>
+        </div>
+      </section>
+
+      <section id="tasksView" class="view" aria-label="Tasks" hidden>
+        <div class="section-heading top-section"><h2>To-dos</h2><span id="taskCount">0 open</span></div>
+        <div id="taskList" class="task-list"></div>
+        <div class="empty-state" id="tasksEmpty" hidden><span class="empty-icon">✅</span><h3>Nothing waiting</h3><p>Tasks found in your notes will appear here.</p></div>
+      </section>
+
+      <section id="scheduleView" class="view" aria-label="Schedule" hidden>
+        <div class="section-heading top-section"><h2>Later</h2><span>Reminders</span></div>
+        <div id="scheduleList" class="schedule-list"></div>
+        <div class="empty-state" id="scheduleEmpty" hidden><span class="empty-icon">🗓️</span><h3>No reminders yet</h3><p>Add a date to any note when you need a nudge.</p></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-button active" data-view="notes" aria-label="Notes"><svg aria-hidden="true"><use href="#icon-note"></use></svg><span>Notes</span></button>
+      <button class="nav-button" data-view="tasks" aria-label="Tasks"><svg aria-hidden="true"><use href="#icon-check"></use></svg><span>To-dos</span></button>
+      <button class="nav-button add-button" data-view="add" aria-label="Add a note"><svg aria-hidden="true"><use href="#icon-plus"></use></svg><span>Add</span></button>
+      <button class="nav-button" data-view="schedule" aria-label="Schedule"><svg aria-hidden="true"><use href="#icon-calendar"></use></svg><span>Later</span></button>
+      <button class="nav-button" data-view="settings" aria-label="Settings"><svg aria-hidden="true"><use href="#icon-settings"></use></svg><span>Settings</span></button>
+    </nav>
+
+  <dialog id="organizeDialog" class="sheet-dialog">
+    <form method="dialog" class="sheet-card" id="organizeForm">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><span class="sheet-kicker">Smart suggestion</span><h2>Here’s a clearer version</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
+      <label for="organizedTitle">Title</label>
+      <input id="organizedTitle" type="text" maxlength="80">
+      <label for="organizedText">Organized note</label>
+      <textarea id="organizedText" rows="5"></textarea>
+      <div class="suggestion-block">
+        <div class="suggestion-heading"><strong>Tasks found</strong><span id="detectedTaskCount">0</span></div>
+        <div id="detectedTasks" class="detected-tasks"></div>
+      </div>
+      <div class="reminder-fields">
+        <label>Reminder date<input id="suggestedDate" type="date"></label>
+        <label>Time<input id="suggestedTime" type="time"></label>
+      </div>
+      <details class="original-note"><summary>See original words</summary><p id="originalText"></p></details>
+      <div class="sheet-actions"><button class="secondary-button" value="cancel">Keep original</button><button class="primary-button" id="applyOrganized" value="default"><svg aria-hidden="true"><use href="#icon-check"></use></svg>Use this version</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="noteDialog" class="sheet-dialog">
+    <form method="dialog" class="sheet-card" id="noteForm">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><span class="sheet-kicker">Note</span><h2>Edit your note</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
+      <input type="hidden" id="editingNoteId">
+      <label for="editingTitle">Title</label><input id="editingTitle" type="text" maxlength="80">
+      <label for="editingText">Note</label><textarea id="editingText" rows="6"></textarea>
+      <div class="reminder-fields"><label>Reminder date<input id="editingDate" type="date"></label><label>Time<input id="editingTime" type="time"></label></div>
+      <div class="sheet-actions split"><button type="button" class="danger-button" id="deleteNote">Delete</button><div><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" id="saveNote" value="default">Save</button></div></div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" class="sheet-dialog">
+    <form method="dialog" class="sheet-card settings-card">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><span class="sheet-kicker">Make it yours</span><h2>Settings</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
+      <section class="settings-section"><h3>Colour</h3><div class="theme-picker" id="themePicker"><button type="button" data-theme="ocean" class="theme-option"><span class="theme-swatch ocean"></span>Ocean</button><button type="button" data-theme="grape" class="theme-option"><span class="theme-swatch grape"></span>Grape</button><button type="button" data-theme="sunset" class="theme-option active"><span class="theme-swatch sunset"></span>Daily</button><button type="button" data-theme="matcha" class="theme-option"><span class="theme-swatch matcha"></span>Matcha</button></div></section>
+      <section class="settings-section"><h3>Install on iPhone</h3><p>Open this page in Safari, tap Share, then choose <strong>Add to Home Screen</strong>.</p></section>
+      <section class="settings-section"><h3>Your data</h3><p>Notes stay in this browser on this device.</p><div class="settings-actions"><button type="button" class="secondary-button" id="exportData">Export backup</button><label class="secondary-button file-button">Import backup<input id="importData" type="file" accept="application/json"></label></div></section>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <svg width="0" height="0" class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 14.2c1 1.5 2.3 2.2 4 2.2s3-.7 4-2.2M9 9h.01M15 9h.01" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Zm6 10 .8 2.2 2.2.8-2.2.8L18 19l-.8-2.2L15 16l2.2-.8L18 13Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-wand" viewBox="0 0 24 24"><path d="m4 20 11-11M13 5l1-2 1 2 2 1-2 1-1 2-1-2-2-1 2-1Zm5 7 .8-1.7.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-note" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.5 2.5L16 9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 3v4M17 3v4M3 10h18" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-linecap="round" stroke-width="1.9"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 15v4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></symbol>
+  </svg>
+  <script src="app.js"></script>
+</body>
+</html>
