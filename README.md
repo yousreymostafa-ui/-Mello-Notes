@@ -12,13 +12,19 @@ A friendly, installable personal notes app for iPhone. Capture rough thoughts wi
 - Apple Calendar `.ics` export
 - Compact colour-coded note cards
 - Notes, To-dos, and Later views
-- Daily (default), Ocean, Grape, and Matcha themes
+- Slate (default), Dusk, Stone, and Sage accent themes
 - Local-only storage plus JSON backup and restore
 - Offline PWA installation
 
 ## Important privacy note
 
 The current smart organizer runs inside the browser and sends no notes to an external AI service. A true generative-AI model requires a private server endpoint so an API key is never exposed in the public GitHub Pages code.
+
+There are no background notifications. Import the exported event into Calendar and configure an alert there. The microphone button focuses the editor; use the iPhone keyboard microphone for dictation.
+
+## Tests
+
+Run `node tests/smoke.cjs` for startup and interaction checks in a dependency-free DOM harness. These tests do not replace on-device iOS testing.
 
 ## Run locally
 

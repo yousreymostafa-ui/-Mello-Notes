@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fff8e9">
+  <meta name="theme-color" content="#f6f7f9">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Mello Notes">
@@ -15,36 +15,35 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-shell" data-theme="sunset">
+  <div class="app-shell" data-theme="ocean">
     <header class="app-header">
       <div>
-        <p class="greeting" id="greeting">Morning 👋</p>
-        <h1 id="screenTitle">Hey, what’s up?</h1>
+        <p class="greeting" id="greeting">MELLO / YOUR PERSONAL SPACE</p>
+        <h1 id="screenTitle">Your notes</h1>
       </div>
       <button class="icon-button profile-button" id="settingsButton" aria-label="Open settings">
-        <svg aria-hidden="true"><use href="#icon-smile"></use></svg>
+        <svg aria-hidden="true"><use href="#icon-settings"></use></svg>
       </button>
     </header>
 
     <main>
       <section class="capture-panel" id="capturePanel" aria-labelledby="newNoteLabel">
-        <span class="abstract-shape shape-a" aria-hidden="true"></span>
-        <span class="abstract-shape shape-b" aria-hidden="true"></span>
-        <span class="abstract-shape shape-c" aria-hidden="true"></span>
         <div class="capture-heading">
-          <label id="newNoteLabel" for="noteInput">Drop your thought here</label>
-          <span class="ai-ready"><svg aria-hidden="true"><use href="#icon-sparkles"></use></svg>Smart ready</span>
+          <label id="newNoteLabel" for="noteInput">A little space to think</label>
+          <span class="ai-ready">NEW NOTE</span>
         </div>
         <textarea id="noteInput" rows="3" placeholder="Write or say anything…" autocomplete="off"></textarea>
         <div class="capture-actions">
           <button class="mic-button" id="micButton" type="button" aria-label="Use iPhone dictation">
             <svg aria-hidden="true"><use href="#icon-mic"></use></svg>
           </button>
-          <button class="primary-button" id="organizeButton" type="button">
+          <button class="secondary-button" id="organizeButton" type="button">
             <svg aria-hidden="true"><use href="#icon-wand"></use></svg>
-            Tidy it up
+            Tidy up
           </button>
+          <button class="primary-button" id="savePlainNote" type="button">Save note</button>
         </div>
+        <p class="capture-hint">For voice notes, tap the mic on your iPhone keyboard.</p>
       </section>
 
       <section id="notesView" class="view active-view" aria-label="Notes">
@@ -55,7 +54,7 @@
           <button class="filter-chip" data-filter="scheduled">Later</button>
         </div>
         <div class="section-heading">
-          <h2>Your notes</h2>
+          <h2>Recently saved</h2>
           <span id="noteCount">0 total</span>
         </div>
         <div class="note-grid" id="noteGrid"></div>
@@ -90,7 +89,8 @@
   <dialog id="organizeDialog" class="sheet-dialog">
     <form method="dialog" class="sheet-card" id="organizeForm">
       <div class="sheet-handle"></div>
-      <div class="sheet-header"><div><span class="sheet-kicker">Smart suggestion</span><h2>Here’s a clearer version</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
+      <div class="sheet-header"><div><span class="sheet-kicker">Formatting preview</span><h2>A little more organized</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
+      <p class="capture-hint">Basic offline formatting, not AI rewriting. Please review dates and tasks before saving.</p>
       <label for="organizedTitle">Title</label>
       <input id="organizedTitle" type="text" maxlength="80">
       <label for="organizedText">Organized note</label>
@@ -104,7 +104,7 @@
         <label>Time<input id="suggestedTime" type="time"></label>
       </div>
       <details class="original-note"><summary>See original words</summary><p id="originalText"></p></details>
-      <div class="sheet-actions"><button class="secondary-button" value="cancel">Keep original</button><button class="primary-button" id="applyOrganized" value="default"><svg aria-hidden="true"><use href="#icon-check"></use></svg>Use this version</button></div>
+      <div class="sheet-actions"><button class="secondary-button" id="keepOriginal" type="button">Save original</button><button class="primary-button" id="applyOrganized" value="default"><svg aria-hidden="true"><use href="#icon-check"></use></svg>Save version</button></div>
     </form>
   </dialog>
 
@@ -116,6 +116,8 @@
       <label for="editingTitle">Title</label><input id="editingTitle" type="text" maxlength="80">
       <label for="editingText">Note</label><textarea id="editingText" rows="6"></textarea>
       <div class="reminder-fields"><label>Reminder date<input id="editingDate" type="date"></label><label>Time<input id="editingTime" type="time"></label></div>
+      <button type="button" class="calendar-button" id="noteCalendar">Save &amp; export to Calendar</button>
+      <p class="capture-hint">Import the event into Calendar and set an alert there. Mello does not send background notifications.</p>
       <div class="sheet-actions split"><button type="button" class="danger-button" id="deleteNote">Delete</button><div><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" id="saveNote" value="default">Save</button></div></div>
     </form>
   </dialog>
@@ -124,7 +126,7 @@
     <form method="dialog" class="sheet-card settings-card">
       <div class="sheet-handle"></div>
       <div class="sheet-header"><div><span class="sheet-kicker">Make it yours</span><h2>Settings</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>
-      <section class="settings-section"><h3>Colour</h3><div class="theme-picker" id="themePicker"><button type="button" data-theme="ocean" class="theme-option"><span class="theme-swatch ocean"></span>Ocean</button><button type="button" data-theme="grape" class="theme-option"><span class="theme-swatch grape"></span>Grape</button><button type="button" data-theme="sunset" class="theme-option active"><span class="theme-swatch sunset"></span>Daily</button><button type="button" data-theme="matcha" class="theme-option"><span class="theme-swatch matcha"></span>Matcha</button></div></section>
+      <section class="settings-section"><h3>Colour</h3><div class="theme-picker" id="themePicker"><button type="button" data-theme="ocean" class="theme-option active"><span class="theme-swatch ocean"></span>Slate</button><button type="button" data-theme="grape" class="theme-option"><span class="theme-swatch grape"></span>Dusk</button><button type="button" data-theme="sunset" class="theme-option"><span class="theme-swatch sunset"></span>Stone</button><button type="button" data-theme="matcha" class="theme-option"><span class="theme-swatch matcha"></span>Sage</button></div></section>
       <section class="settings-section"><h3>Install on iPhone</h3><p>Open this page in Safari, tap Share, then choose <strong>Add to Home Screen</strong>.</p></section>
       <section class="settings-section"><h3>Your data</h3><p>Notes stay in this browser on this device.</p><div class="settings-actions"><button type="button" class="secondary-button" id="exportData">Export backup</button><label class="secondary-button file-button">Import backup<input id="importData" type="file" accept="application/json"></label></div></section>
     </form>

@@ -2,13 +2,14 @@
   "use strict";
 
   const STORAGE_KEY = "mello-notes-v1";
-  const THEME_KEY = "mello-theme-v1";
+  const THEME_KEY = "mello-theme-v2";
   const palette = ["lilac", "yellow", "mint", "peach", "blue", "paper"];
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
   const els = {
+    greeting: $("#greeting"),
     shell: $(".app-shell"),
     noteInput: $("#noteInput"),
     micButton: $("#micButton"),
@@ -97,7 +98,13 @@
   }
 
   function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      return true;
+    } catch {
+      showToast("Storage is unavailable. Export a backup before closing.");
+      return false;
+    }
   }
 
   function escapeHtml(value = "") {
@@ -193,7 +200,7 @@
   }
 
   function smartOrganize(rawText) {
-    const raw = rawText.trim().replace(/\s+/g, " ");
+    const raw = rawText.trim().replace(/[^\S\n]+/g, " ");
     const date = detectDate(raw);
     const time = detectTime(raw);
     let segments = raw
@@ -322,12 +329,31 @@
       reminderTime: els.suggestedTime.value,
       tasks
     });
-    saveState();
+    if (!saveState()) { state.notes.shift(); return; }
     els.noteInput.value = "";
     pendingSuggestion = null;
     els.organizeDialog.close();
+    resetFilter();
     renderAll();
     showToast("Note saved ✨");
+  }
+
+  function resetFilter() {
+    activeFilter = "all";
+    $$(".filter-chip").forEach(button => button.classList.toggle("active", button.dataset.filter === "all"));
+  }
+
+  function savePlainNote() {
+    const raw = els.noteInput.value.trim();
+    if (!raw) { showToast("Write a note first."); els.noteInput.focus(); return; }
+    const now = new Date().toISOString();
+    state.notes.unshift({ id: uid("note"), title: createTitle(raw, "note"), text: raw, original: raw,
+      type: "note", color: "paper", createdAt: now, updatedAt: now, reminderDate: "", reminderTime: "", tasks: [] });
+    if (!saveState()) { state.notes.shift(); return; }
+    els.noteInput.value = "";
+    resetFilter();
+    renderAll();
+    showToast("Note saved");
   }
 
   function openNote(noteId) {
@@ -345,15 +371,17 @@
     event.preventDefault();
     const note = state.notes.find(item => item.id === els.editingNoteId.value);
     if (!note) return;
+    const previous = { ...note };
     note.title = els.editingTitle.value.trim() || "New note";
     note.text = els.editingText.value.trim();
     note.reminderDate = els.editingDate.value;
     note.reminderTime = els.editingTime.value;
     note.updatedAt = new Date().toISOString();
-    saveState();
+    if (!saveState()) { Object.assign(note, previous); return false; }
     els.noteDialog.close();
     renderAll();
     showToast("Note updated");
+    return true;
   }
 
   function removeNote() {
@@ -381,7 +409,7 @@
     if (view === "add") {
       changeView("notes");
       $("#capturePanel").scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(() => els.noteInput.focus(), 280);
+      els.noteInput.focus();
       return;
     }
     if (view === "settings") {
@@ -395,14 +423,15 @@
     });
     $$(".nav-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
     $("#capturePanel").hidden = view !== "notes";
-    $("#screenTitle").textContent = view === "notes" ? "Hey, what’s up?" : view === "tasks" ? "Small steps, made clear" : "What’s coming up?";
+    $("#screenTitle").textContent = view === "notes" ? "Your notes" : view === "tasks" ? "Your to-dos" : "Coming up";
   }
 
   function setTheme(theme) {
+    if (!["ocean", "grape", "sunset", "matcha"].includes(theme)) theme = "ocean";
     els.shell.dataset.theme = theme;
-    localStorage.setItem(THEME_KEY, theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch {}
     $$(".theme-option").forEach(button => button.classList.toggle("active", button.dataset.theme === theme));
-    const colors = { ocean: "#f4fbff", grape: "#fbf6ff", sunset: "#fff8e9", matcha: "#f7faef" };
+    const colors = { ocean: "#f6f7f9", grape: "#f7f7fa", sunset: "#f8f7f4", matcha: "#f5f8f6" };
     $('meta[name="theme-color"]').setAttribute("content", colors[theme] || colors.ocean);
   }
 
@@ -466,6 +495,12 @@
       showToast("Tap the microphone on your iPhone keyboard to dictate.");
     });
     els.organizeButton.addEventListener("click", openSuggestion);
+    $("#savePlainNote").addEventListener("click", savePlainNote);
+    $("#keepOriginal").addEventListener("click", event => { event.preventDefault(); savePlainNote(); els.organizeDialog.close(); });
+    $("#noteCalendar").addEventListener("click", () => {
+      if (!els.editingDate.value) { showToast("Choose a reminder date first."); els.editingDate.focus(); return; }
+      if (updateNote({preventDefault() {}})) downloadCalendar(els.editingNoteId.value);
+    });
     els.applyOrganized.addEventListener("click", addSuggestedNote);
     els.saveNote.addEventListener("click", updateNote);
     els.deleteNote.addEventListener("click", removeNote);
@@ -483,10 +518,12 @@
 
   function updateGreeting() {
     const hour = new Date().getHours();
-    els.greeting.textContent = `${hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening"} 👋`;
+    els.greeting.textContent = `MELLO / ${hour < 12 ? "GOOD MORNING" : hour < 18 ? "GOOD AFTERNOON" : "GOOD EVENING"}`;
   }
 
-  setTheme(localStorage.getItem(THEME_KEY) || "sunset");
+  let savedTheme = "ocean";
+  try { savedTheme = localStorage.getItem(THEME_KEY) || "ocean"; } catch {}
+  setTheme(savedTheme);
   updateGreeting();
   bindEvents();
   renderAll();
