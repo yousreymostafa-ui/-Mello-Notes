@@ -1,226 +1,319 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f1ea">
-<title>Flowboard</title>
+<meta name="theme-color" content="#111a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="F Links">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./logo.svg">
+<title>F Links</title>
 <style>
 :root{
-  --bg:#f4f1ea;--panel:#fbfaf7;--ink:#171816;--muted:#777a72;--line:#e5e0d6;
-  --accent:#324b3d;--accent2:#dfe8e1;--white:#fff;--danger:#a94a4a;--shadow:0 18px 60px rgba(41,35,27,.08);
+  --bg:#f4f4f1;--panel:#fff;--soft:#ececea;--text:#16171a;--muted:#7b7d83;
+  --line:#e6e6e2;--accent:#111a3a;--shadow:0 14px 40px rgba(20,20,30,.07);
 }
-*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input{font:inherit} button{cursor:pointer} a{color:inherit;text-decoration:none}
-.app{max-width:1120px;margin:0 auto;padding:22px 18px 64px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:11px;user-select:none;-webkit-user-select:none}
-.mark{width:39px;height:39px;border-radius:14px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:-.04em;box-shadow:0 10px 24px rgba(0,0,0,.12)}
-.brand-copy b{display:block;font-size:14px}.brand-copy span,.date{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:44px}
-.hero-main,.hero-side,.card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
-.hero-main{border-radius:30px;padding:42px;min-height:320px;display:flex;flex-direction:column;justify-content:space-between}
-.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
-.hero h1{font-size:clamp(42px,7vw,78px);line-height:.94;letter-spacing:-.065em;margin:14px 0 18px;max-width:720px;font-weight:750}
-.hero p{color:var(--muted);line-height:1.7;max-width:600px;margin:0;font-size:14px}
-.pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent2);color:var(--accent);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:700;width:max-content;margin-top:32px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
-.hero-side{border-radius:30px;padding:26px;display:flex;flex-direction:column;justify-content:space-between}
-.big-number{font-size:70px;line-height:.9;letter-spacing:-.07em;font-weight:700}.hero-side small{color:var(--muted)}
-.mini-stack{display:grid;gap:10px}.mini-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:13px;font-size:13px}.mini-row span:last-child{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
-.card{border-radius:24px;padding:22px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
-.card small{color:var(--muted);font-size:11px}.card h3{font-size:19px;letter-spacing:-.035em;margin:0}.card p{color:var(--muted);font-size:12px;line-height:1.55;margin:8px 0 0}
-footer{text-align:center;color:#aaa69d;font-size:11px;padding-top:40px}
-.secret-hotspot{position:fixed;right:3px;bottom:3px;width:20px;height:20px;border:0;background:transparent;opacity:.01}
-
-/* Modal */
-.overlay{position:fixed;inset:0;background:rgba(20,20,18,.36);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+body.dark{--bg:#0f1117;--panel:#181b23;--soft:#20242d;--text:#f5f6f8;--muted:#989da8;--line:#2a2f39;--accent:#f4f6ff;--shadow:0 16px 46px rgba(0,0,0,.25)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.shell{max-width:980px;margin:auto;padding:18px 16px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand img{width:42px;height:42px;border-radius:13px;display:block}
+.brand-copy strong{display:block;font-size:15px;letter-spacing:-.02em}
+.brand-copy span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.head-actions{display:flex;gap:8px}
+.icon-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--panel);color:var(--text);display:grid;place-items:center;font-size:17px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.hero h1{margin:0;font-size:clamp(30px,6vw,52px);letter-spacing:-.055em;line-height:1}
+.hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
+.search{margin:18px 0}
+.search input,.field input,.field select{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:13px 14px;outline:none}
+.search input:focus,.field input:focus,.field select:focus{border-color:#a6a8ae;box-shadow:0 0 0 3px rgba(64,86,255,.07)}
+.links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.links.list{grid-template-columns:1fr}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:21px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
+.card-thumb{height:150px;background:var(--soft);position:relative;overflow:hidden}
+.list .card{display:grid;grid-template-columns:130px 1fr}
+.list .card-thumb{height:112px}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.card-thumb.logo img{object-fit:contain;padding:34px}
+.card-body{padding:14px}
+.card-title{font-weight:750;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-url{margin-top:4px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-actions{display:flex;gap:7px;margin-top:13px}
+.mini{border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:10px;padding:8px 10px;font-size:11px}
+.empty{grid-column:1/-1;padding:44px 20px;border:1px dashed var(--line);border-radius:20px;text-align:center;color:var(--muted);font-size:13px}
+.fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));border:0;border-radius:18px;background:#151a35;color:white;padding:15px 18px;font-weight:750;box-shadow:0 16px 38px rgba(12,17,45,.28);z-index:20}
+body.dark .fab{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
+.overlay{position:fixed;inset:0;background:rgba(10,12,18,.38);backdrop-filter:blur(11px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
 .overlay.show{display:flex}
-.sheet{width:min(100%,440px);background:#fbfaf7;border:1px solid rgba(255,255,255,.7);border-radius:28px;padding:24px;box-shadow:0 28px 90px rgba(0,0,0,.2)}
-.vault{width:min(100%,850px);max-height:90vh;overflow:auto}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}
-.sheet-head h2{margin:0;font-size:22px;letter-spacing:-.045em}.x{border:1px solid var(--line);background:white;width:38px;height:38px;border-radius:13px;font-size:18px}
-.help{font-size:13px;color:var(--muted);line-height:1.6;margin:-5px 0 18px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}.field label{font-size:11px;color:var(--muted);font-weight:650}
-.field input{border:1px solid var(--line);background:white;border-radius:14px;padding:13px 14px;outline:none;color:var(--ink)}.field input:focus{border-color:#a9b3aa;box-shadow:0 0 0 3px rgba(50,75,61,.06)}
-.btn{border:0;border-radius:14px;padding:12px 15px;background:var(--ink);color:white;font-weight:700}.btn.soft{background:#ebe8df;color:var(--ink)}.btn.danger{background:#f4e6e5;color:var(--danger)}
-.error{min-height:18px;color:var(--danger);font-size:12px;margin-top:7px}
-.vault-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px}.vault-toolbar input{flex:1;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:white;outline:none}
-.addbox{border:1px solid var(--line);border-radius:20px;padding:15px;background:#f7f5ef;margin-bottom:16px}.form-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap}
-.list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.link-card{background:white;border:1px solid var(--line);border-radius:18px;padding:13px;display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center}
-.ico{width:46px;height:46px;border-radius:13px;background:var(--accent2);color:var(--accent);display:grid;place-items:center;font-weight:800;overflow:hidden}.ico img{width:100%;height:100%;object-fit:cover}
-.meta{min-width:0}.meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}.meta span{display:block;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
-.row-actions{grid-column:1/-1;display:flex;gap:7px}.mini{border:1px solid var(--line);background:#faf9f6;border-radius:10px;padding:8px 10px;font-size:11px}
-.empty{grid-column:1/-1;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px;padding:34px 16px}
-.vault-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.sheet{width:min(100%,460px);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 28px 80px rgba(0,0,0,.22)}
+.sheet.wide{width:min(100%,620px)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.sheet-head h2{font-size:20px;letter-spacing:-.04em;margin:0}
+.sheet-head p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.close{border:1px solid var(--line);background:var(--soft);color:var(--text);width:38px;height:38px;border-radius:12px;font-size:18px}
+.field{margin-bottom:12px}
+.field label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin:0 0 7px}
+.primary{width:100%;border:0;border-radius:14px;padding:13px 15px;background:#151a35;color:#fff;font-weight:750}
+body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
+.secondary{border:1px solid var(--line);border-radius:13px;padding:11px 13px;background:var(--soft);color:var(--text);font-weight:650}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.more{display:none;margin-top:12px}
+.more.show{display:block}
+.preview{display:flex;align-items:center;gap:12px;background:var(--soft);border-radius:16px;padding:10px;margin:6px 0 14px}
+.preview img{width:58px;height:58px;border-radius:13px;object-fit:cover;background:var(--panel)}
+.preview div{min-width:0}
+.preview b,.preview span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.preview b{font-size:13px}.preview span{font-size:11px;color:var(--muted);margin-top:4px}
+.settings-section{padding:14px 0;border-top:1px solid var(--line)}
+.settings-section:first-of-type{border-top:0;padding-top:0}
+.setting{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 0}
+.setting .label b{display:block;font-size:13px}.setting .label span{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.setting select{border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:11px;padding:9px 10px}
+.switch{position:relative;width:44px;height:26px;flex:0 0 auto}
+.switch input{display:none}.slider{position:absolute;inset:0;background:#c9cbd0;border-radius:99px;transition:.2s}.slider:after{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.switch input:checked+.slider{background:#5367ff}.switch input:checked+.slider:after{transform:translateX(18px)}
+.note{font-size:11px;color:var(--muted);line-height:1.55}
+.lock-logo{width:72px;height:72px;border-radius:22px;display:block;margin:0 auto 18px}
+.center{text-align:center}
+.error{min-height:18px;margin-top:8px;color:#b44848;font-size:11px}
 @media(max-width:760px){
-  .hero{grid-template-columns:1fr}.hero-main{padding:30px;min-height:300px}.hero-side{min-height:210px}.grid{grid-template-columns:1fr}.card{min-height:120px}
-  .form-grid,.list{grid-template-columns:1fr}.full{grid-column:auto}.overlay{align-items:flex-end;padding:0}.sheet{border-radius:28px 28px 0 0;max-height:92vh;overflow:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  .links{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card-thumb{height:125px}
+}
+@media(max-width:520px){
+  .shell{padding:15px 13px 100px}.hero{align-items:flex-start}.links{grid-template-columns:1fr 1fr;gap:9px}
+  .card{border-radius:17px}.card-thumb{height:110px}.card-body{padding:11px}.card-actions{gap:5px;flex-wrap:wrap}.mini{padding:7px 8px}
+  .list .card{grid-template-columns:94px 1fr}.list .card-thumb{height:100%}
+  .overlay{align-items:flex-end;padding:0}.sheet{border-radius:26px 26px 0 0;max-height:93vh;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
 <body>
-<main class="app">
-  <header class="topbar">
-    <div class="brand" id="brandTrigger">
-      <div class="mark">F</div>
-      <div class="brand-copy"><b>Flowboard</b><span>personal dashboard</span></div>
+<main class="shell" id="app">
+  <header>
+    <div class="brand">
+      <img src="./logo.svg" alt="F Links logo">
+      <div class="brand-copy"><strong>F Links</strong><span>private link space</span></div>
     </div>
-    <div class="date" id="today"></div>
+    <div class="head-actions">
+      <button class="icon-btn" id="lockBtn" title="Lock">⌁</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
   </header>
 
   <section class="hero">
-    <div class="hero-main">
-      <div>
-        <div class="eyebrow">Today</div>
-        <h1>Make room for what matters.</h1>
-        <p>A minimal space for focus, light planning, and a calmer start to the day.</p>
-      </div>
-      <div class="pill"><span class="dot"></span> Ready for a fresh start</div>
-    </div>
-
-    <aside class="hero-side">
-      <div>
-        <small>Daily focus</small>
-        <div class="big-number">03</div>
-      </div>
-      <div class="mini-stack">
-        <div class="mini-row"><span>Priority</span><span>One thing at a time</span></div>
-        <div class="mini-row"><span>Mode</span><span>Quiet</span></div>
-        <div class="mini-row"><span>Reset</span><span>Anytime</span></div>
-      </div>
-    </aside>
+    <div><h1>Your links.</h1><p id="countLabel">0 saved links</p></div>
   </section>
 
-  <section class="grid">
-    <article class="card"><small>01 / FOCUS</small><div><h3>Start smaller.</h3><p>Reduce the task until the first move feels obvious.</p></div></article>
-    <article class="card"><small>02 / SPACE</small><div><h3>Keep some margin.</h3><p>Not every minute needs to be filled.</p></div></article>
-    <article class="card"><small>03 / REVIEW</small><div><h3>Close the loop.</h3><p>Finish with a quick check of what moved forward.</p></div></article>
-  </section>
-
-  <footer>Flowboard · a simple daily space</footer>
+  <div class="search"><input id="search" type="search" placeholder="Search links"></div>
+  <section class="links" id="links"></section>
 </main>
 
-<button class="secret-hotspot" id="cornerTrigger" aria-label=" "></button>
+<button class="fab" id="addBtn">＋ Add link</button>
 
-<div class="overlay" id="loginOverlay">
-  <section class="sheet">
-    <div class="sheet-head"><h2 id="loginTitle">Private space</h2><button class="x" data-close="loginOverlay">×</button></div>
-    <p class="help" id="loginHelp">Enter your password to open your saved links.</p>
-    <div class="field" id="setupWrap" style="display:none"><label>Create password</label><input id="newPass" type="password" autocomplete="new-password" placeholder="At least 4 characters"></div>
-    <div class="field"><label id="passLabel">Password</label><input id="pass" type="password" autocomplete="current-password" placeholder="Enter password"></div>
-    <button class="btn" id="unlock" style="width:100%">Unlock</button>
-    <div class="error" id="loginError"></div>
-  </section>
+<div class="overlay" id="addOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><h2 id="addTitle">Add link</h2><p>Paste a URL. Thumbnail and logo are automatic.</p></div>
+      <button class="close" data-close="addOverlay">×</button>
+    </div>
+    <div class="field"><label>URL</label><input id="urlInput" inputmode="url" placeholder="example.com"></div>
+    <div class="preview" id="autoPreview" style="display:none">
+      <img id="previewImg" alt="">
+      <div><b id="previewName"></b><span id="previewUrl"></span></div>
+    </div>
+    <button class="secondary" id="moreBtn">More options</button>
+    <div class="more" id="moreOptions">
+      <div class="field"><label>Name</label><input id="nameInput" placeholder="Optional custom name"></div>
+      <div class="field"><label>Custom thumbnail URL</label><input id="thumbInput" inputmode="url" placeholder="Optional"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="primary" id="saveLinkBtn">Save link</button>
+      <button class="secondary" id="cancelEdit" style="display:none">Cancel edit</button>
+    </div>
+  </div>
 </div>
 
-<div class="overlay" id="vaultOverlay">
-  <section class="sheet vault">
-    <div class="sheet-head"><h2>Your links</h2><button class="x" data-close="vaultOverlay">×</button></div>
-
-    <div class="vault-toolbar">
-      <input id="search" placeholder="Search saved links">
-      <button class="btn soft" id="lock">Lock</button>
+<div class="overlay" id="settingsOverlay">
+  <div class="sheet wide">
+    <div class="sheet-head">
+      <div><h2>Settings</h2><p>Control how F Links looks and locks.</p></div>
+      <button class="close" data-close="settingsOverlay">×</button>
     </div>
 
-    <div class="addbox">
-      <div class="form-grid">
-        <div class="field"><label>Name</label><input id="name" placeholder="Dashboard"></div>
-        <div class="field"><label>URL</label><input id="url" placeholder="https://example.com"></div>
-        <div class="field full"><label>Thumbnail URL · optional</label><input id="thumb" placeholder="https://example.com/image.jpg"></div>
-        <div class="actions full"><button class="btn" id="save">Add link</button><button class="btn soft" id="cancel" style="display:none">Cancel edit</button></div>
+    <div class="settings-section">
+      <div class="setting">
+        <div class="label"><b>Layout</b><span>Choose how saved links are shown.</span></div>
+        <select id="layoutSetting"><option value="grid">Grid</option><option value="list">List</option></select>
+      </div>
+      <div class="setting">
+        <div class="label"><b>Thumbnail</b><span>Website preview, site logo, or none.</span></div>
+        <select id="thumbSetting"><option value="preview">Preview</option><option value="logo">Logo</option><option value="none">None</option></select>
+      </div>
+      <div class="setting">
+        <div class="label"><b>Theme</b><span>Follow your device or choose manually.</span></div>
+        <select id="themeSetting"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
       </div>
     </div>
 
-    <div class="list" id="list"></div>
-
-    <div class="vault-foot">
-      <span id="count">0 links · stored on this device</span>
-      <button class="btn danger" id="clear">Clear all</button>
+    <div class="settings-section">
+      <div class="setting">
+        <div class="label"><b>Lock on open</b><span>Ask for your password when F Links opens.</span></div>
+        <label class="switch"><input type="checkbox" id="lockOpenSetting"><span class="slider"></span></label>
+      </div>
+      <div class="setting">
+        <div class="label"><b>Auto-lock when hidden</b><span>Lock after switching away from the page.</span></div>
+        <label class="switch"><input type="checkbox" id="autoLockSetting"><span class="slider"></span></label>
+      </div>
     </div>
-  </section>
+
+    <div class="settings-section">
+      <div class="row">
+        <button class="secondary" id="changePassBtn">Change password</button>
+        <button class="secondary" id="exportBtn">Export links</button>
+        <button class="secondary" id="importBtn">Import links</button>
+        <input id="importFile" type="file" accept="application/json" hidden>
+      </div>
+      <p class="note">Your links and password stay in this browser's local storage. The password is hashed, but the links themselves are not encrypted.</p>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="lockOverlay">
+  <div class="sheet center">
+    <img class="lock-logo" src="./logo.svg" alt="">
+    <h2 id="lockTitle" style="margin:0 0 7px;letter-spacing:-.04em">F Links</h2>
+    <p class="note" id="lockText" style="margin:0 0 18px">Enter your password.</p>
+    <div class="field" id="newPassWrap" style="display:none;text-align:left"><label>Create password</label><input id="newPass" type="password" autocomplete="new-password"></div>
+    <div class="field" style="text-align:left"><label id="passLabel">Password</label><input id="pass" type="password" autocomplete="current-password"></div>
+    <button class="primary" id="unlockBtn">Unlock</button>
+    <div class="error" id="lockError"></div>
+  </div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-const PASS_KEY='flowboard_pass_v2', LINKS_KEY='flowboard_links_v2';
-let pressTimer=null, editIndex=-1, unlocked=false;
+const KEYS={links:'flinks_links_v3',pass:'flinks_pass_v3',settings:'flinks_settings_v3'};
+const defaults={layout:'grid',thumb:'preview',theme:'system',lockOpen:true,autoLock:true};
+let editing=-1, unlocked=false;
 
-$('today').textContent=new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric'}).format(new Date());
-
-async function hash(value){
-  const data=new TextEncoder().encode(value);
-  const digest=await crypto.subtle.digest('SHA-256',data);
-  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+function migrate(){
+  if(!localStorage.getItem(KEYS.links)){
+    const old=localStorage.getItem('flowboard_links_v2')||localStorage.getItem('secret_links_v1');
+    if(old){try{
+      const arr=JSON.parse(old).map(x=>({name:x.name||x.title||titleFromUrl(x.url),url:x.url,thumb:x.thumb||''}));
+      localStorage.setItem(KEYS.links,JSON.stringify(arr));
+    }catch{}}
+  }
+  if(!localStorage.getItem(KEYS.pass)&&localStorage.getItem('flowboard_pass_v2')){
+    localStorage.setItem(KEYS.pass,localStorage.getItem('flowboard_pass_v2'));
+  }
 }
-function links(){try{return JSON.parse(localStorage.getItem(LINKS_KEY))||[]}catch{return[]}}
-function saveLinks(v){localStorage.setItem(LINKS_KEY,JSON.stringify(v));render()}
-function normalize(v){v=v.trim();if(!v)return'';return /^https?:\/\//i.test(v)?v:'https://'+v}
-function openLogin(){
-  const setup=!localStorage.getItem(PASS_KEY);
-  $('loginOverlay').classList.add('show');$('loginError').textContent='';$('pass').value='';$('newPass').value='';
-  $('setupWrap').style.display=setup?'flex':'none';
-  $('loginTitle').textContent=setup?'Create private space':'Private space';
-  $('loginHelp').textContent=setup?'Create a password for this browser.':'Enter your password to open your saved links.';
-  $('passLabel').textContent=setup?'Confirm password':'Password';
-  $('unlock').textContent=setup?'Create & open':'Unlock';
+function getSettings(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEYS.settings)||'{}')}}catch{return {...defaults}}}
+function setSettings(s){localStorage.setItem(KEYS.settings,JSON.stringify(s));applySettings();render()}
+function getLinks(){try{return JSON.parse(localStorage.getItem(KEYS.links)||'[]')}catch{return[]}}
+function setLinks(v){localStorage.setItem(KEYS.links,JSON.stringify(v));render()}
+function normalize(v){v=(v||'').trim();if(!v)return'';return /^https?:\/\//i.test(v)?v:'https://'+v}
+function host(url){try{return new URL(normalize(url)).hostname.replace(/^www\./,'')}catch{return url}}
+function titleFromUrl(url){const h=host(url).split('.')[0]||'Link';return h.charAt(0).toUpperCase()+h.slice(1)}
+function favicon(url){return 'https://www.google.com/s2/favicons?sz=128&domain_url='+encodeURIComponent(normalize(url))}
+function screenshot(url){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(normalize(url))+'?w=720'}
+async function hash(v){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function thumbFor(item,mode){if(item.thumb)return item.thumb;if(mode==='logo')return favicon(item.url);if(mode==='preview')return screenshot(item.url);return''}
+
+function applySettings(){
+  const s=getSettings();
+  let dark=s.theme==='dark'||(s.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.body.classList.toggle('dark',dark);
+  $('links').classList.toggle('list',s.layout==='list');
+  $('layoutSetting').value=s.layout;$('thumbSetting').value=s.thumb;$('themeSetting').value=s.theme;
+  $('lockOpenSetting').checked=s.lockOpen;$('autoLockSetting').checked=s.autoLock;
+}
+function render(){
+  const s=getSettings(),q=$('search').value.trim().toLowerCase(),items=getLinks().map((x,i)=>({...x,_i:i})).filter(x=>!q||(x.name||'').toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
+  const all=getLinks();$('countLabel').textContent=all.length+' saved '+(all.length===1?'link':'links');
+  const box=$('links');box.innerHTML='';
+  if(!items.length){box.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links yet. Tap “Add link” to save one.')+'</div>';return}
+  items.forEach(item=>{
+    const card=document.createElement('article');card.className='card';
+    if(s.thumb!=='none'){
+      const th=document.createElement('div');th.className='card-thumb'+(s.thumb==='logo'?' logo':'');
+      const img=document.createElement('img');img.src=thumbFor(item,s.thumb);img.alt='';
+      img.onerror=()=>{if(img.src!==favicon(item.url)){img.src=favicon(item.url);th.classList.add('logo')}};
+      th.appendChild(img);card.appendChild(th);
+    }
+    const body=document.createElement('div');body.className='card-body';
+    const name=document.createElement('div');name.className='card-title';name.textContent=item.name||titleFromUrl(item.url);
+    const url=document.createElement('div');url.className='card-url';url.textContent=host(item.url);
+    const acts=document.createElement('div');acts.className='card-actions';
+    [['Open',()=>window.open(item.url,'_blank','noopener,noreferrer')],['Edit',()=>editLink(item._i)],['Delete',()=>deleteLink(item._i)]].forEach(([t,fn])=>{const b=document.createElement('button');b.className='mini';b.textContent=t;b.onclick=fn;acts.appendChild(b)});
+    body.append(name,url,acts);card.appendChild(body);box.appendChild(card);
+  });
+}
+function open(id){$(id).classList.add('show')}
+function close(id){$(id).classList.remove('show')}
+function resetAdd(){editing=-1;$('urlInput').value='';$('nameInput').value='';$('thumbInput').value='';$('moreOptions').classList.remove('show');$('moreBtn').textContent='More options';$('autoPreview').style.display='none';$('addTitle').textContent='Add link';$('saveLinkBtn').textContent='Save link';$('cancelEdit').style.display='none'}
+function updatePreview(){
+  const u=normalize($('urlInput').value);if(!u){$('autoPreview').style.display='none';return}
+  $('autoPreview').style.display='flex';$('previewName').textContent=$('nameInput').value.trim()||titleFromUrl(u);$('previewUrl').textContent=host(u);
+  const mode=getSettings().thumb;const custom=$('thumbInput').value.trim();$('previewImg').src=custom||(mode==='logo'?favicon(u):screenshot(u));
+  $('previewImg').onerror=()=>{$('previewImg').src=favicon(u)}
+}
+function saveLink(){
+  const url=normalize($('urlInput').value);if(!url){$('urlInput').focus();return}
+  try{new URL(url)}catch{alert('Please enter a valid URL.');return}
+  const item={url,name:$('nameInput').value.trim()||titleFromUrl(url),thumb:$('thumbInput').value.trim()};
+  const a=getLinks();if(editing>=0)a[editing]=item;else a.unshift(item);setLinks(a);close('addOverlay');resetAdd();
+}
+function editLink(i){const x=getLinks()[i];editing=i;$('urlInput').value=x.url;$('nameInput').value=x.name||'';$('thumbInput').value=x.thumb||'';$('moreOptions').classList.add('show');$('moreBtn').textContent='Hide options';$('addTitle').textContent='Edit link';$('saveLinkBtn').textContent='Save changes';$('cancelEdit').style.display='inline-block';updatePreview();open('addOverlay')}
+function deleteLink(i){if(!confirm('Delete this link?'))return;const a=getLinks();a.splice(i,1);setLinks(a)}
+function lock(){unlocked=false;showLock(false)}
+function showLock(forceSetup){
+  const setup=forceSetup||!localStorage.getItem(KEYS.pass);
+  $('lockOverlay').classList.add('show');$('newPassWrap').style.display=setup?'block':'none';$('passLabel').textContent=setup?'Confirm password':'Password';$('lockText').textContent=setup?'Create a password for this device.':'Enter your password.';$('unlockBtn').textContent=setup?'Create & unlock':'Unlock';$('lockError').textContent='';$('newPass').value='';$('pass').value='';
   setTimeout(()=>$(setup?'newPass':'pass').focus(),100);
 }
 async function unlock(){
-  const stored=localStorage.getItem(PASS_KEY);
+  const stored=localStorage.getItem(KEYS.pass);
   if(!stored){
-    const a=$('newPass').value,b=$('pass').value;
-    if(a.length<4){$('loginError').textContent='Use at least 4 characters.';return}
-    if(a!==b){$('loginError').textContent='Passwords do not match.';return}
-    localStorage.setItem(PASS_KEY,await hash(a));
-  }else if(await hash($('pass').value)!==stored){$('loginError').textContent='Incorrect password.';return}
-  unlocked=true;$('loginOverlay').classList.remove('show');$('vaultOverlay').classList.add('show');render();
+    const a=$('newPass').value,b=$('pass').value;if(a.length<4){$('lockError').textContent='Use at least 4 characters.';return}if(a!==b){$('lockError').textContent='Passwords do not match.';return}
+    localStorage.setItem(KEYS.pass,await hash(a));
+  }else if(await hash($('pass').value)!==stored){$('lockError').textContent='Incorrect password.';return}
+  unlocked=true;close('lockOverlay');render();
 }
-function resetForm(){editIndex=-1;$('name').value='';$('url').value='';$('thumb').value='';$('save').textContent='Add link';$('cancel').style.display='none'}
-function render(){
-  const q=$('search').value.trim().toLowerCase(), all=links();
-  const filtered=all.map((x,i)=>({...x,_i:i})).filter(x=>!q||x.name.toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
-  $('count').textContent=all.length+' '+(all.length===1?'link':'links')+' · stored on this device';
-  const list=$('list');list.innerHTML='';
-  if(!filtered.length){list.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links saved yet.')+'</div>';return}
-  filtered.forEach(item=>{
-    const card=document.createElement('div');card.className='link-card';
-    const ico=document.createElement('div');ico.className='ico';
-    if(item.thumb){const img=document.createElement('img');img.src=item.thumb;img.alt='';img.onerror=()=>{img.remove();ico.textContent=(item.name[0]||'↗').toUpperCase()};ico.appendChild(img)}
-    else ico.textContent=(item.name[0]||'↗').toUpperCase();
-    const meta=document.createElement('div');meta.className='meta';
-    const b=document.createElement('b');b.textContent=item.name;
-    const s=document.createElement('span');s.textContent=item.url;meta.append(b,s);
-    const acts=document.createElement('div');acts.className='row-actions';
-    [['Open',()=>window.open(item.url,'_blank','noopener,noreferrer')],['Edit',()=>edit(item._i)],['Delete',()=>remove(item._i)]].forEach(([t,fn])=>{const bt=document.createElement('button');bt.className='mini';bt.textContent=t;bt.onclick=fn;acts.appendChild(bt)});
-    card.append(ico,meta,acts);list.appendChild(card);
-  });
-}
-function add(){
-  const name=$('name').value.trim(),url=normalize($('url').value),thumb=$('thumb').value.trim();
-  if(!name||!url){alert('Add a name and URL.');return}
-  const a=links(),item={name,url,thumb};
-  if(editIndex>=0)a[editIndex]=item;else a.unshift(item);
-  saveLinks(a);resetForm();
-}
-function edit(i){const x=links()[i];if(!x)return;editIndex=i;$('name').value=x.name;$('url').value=x.url;$('thumb').value=x.thumb||'';$('save').textContent='Save changes';$('cancel').style.display='inline-block';$('name').focus()}
-function remove(i){if(!confirm('Delete this link?'))return;const a=links();a.splice(i,1);saveLinks(a);resetForm()}
-function close(id){$(id).classList.remove('show')}
-function lock(){unlocked=false;close('vaultOverlay');resetForm();$('search').value=''}
 
-$('brandTrigger').addEventListener('pointerdown',()=>pressTimer=setTimeout(openLogin,1100));
-['pointerup','pointerleave','pointercancel'].forEach(e=>$('brandTrigger').addEventListener(e,()=>clearTimeout(pressTimer)));
-$('cornerTrigger').onclick=openLogin;
-$('unlock').onclick=unlock;$('save').onclick=add;$('cancel').onclick=resetForm;$('lock').onclick=lock;$('search').oninput=render;
-$('clear').onclick=()=>{if(confirm('Delete every saved link from this device?')){localStorage.removeItem(LINKS_KEY);resetForm();render()}};
+$('addBtn').onclick=()=>{resetAdd();open('addOverlay');setTimeout(()=>$('urlInput').focus(),80)};
+$('settingsBtn').onclick=()=>{applySettings();open('settingsOverlay')};
+$('lockBtn').onclick=lock;
+$('saveLinkBtn').onclick=saveLink;
+$('cancelEdit').onclick=()=>{resetAdd();close('addOverlay')};
+$('moreBtn').onclick=()=>{const x=$('moreOptions');x.classList.toggle('show');$('moreBtn').textContent=x.classList.contains('show')?'Hide options':'More options'};
+$('urlInput').oninput=updatePreview;$('nameInput').oninput=updatePreview;$('thumbInput').oninput=updatePreview;$('search').oninput=render;
+$('layoutSetting').onchange=e=>setSettings({...getSettings(),layout:e.target.value});
+$('thumbSetting').onchange=e=>setSettings({...getSettings(),thumb:e.target.value});
+$('themeSetting').onchange=e=>setSettings({...getSettings(),theme:e.target.value});
+$('lockOpenSetting').onchange=e=>setSettings({...getSettings(),lockOpen:e.target.checked});
+$('autoLockSetting').onchange=e=>setSettings({...getSettings(),autoLock:e.target.checked});
+$('unlockBtn').onclick=unlock;
+$('changePassBtn').onclick=()=>{localStorage.removeItem(KEYS.pass);close('settingsOverlay');showLock(true)};
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(getLinks(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='f-links-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const a=JSON.parse(await f.text());if(!Array.isArray(a))throw 0;setLinks(a);alert('Links imported.')}catch{alert('That backup file could not be imported.')}e.target.value=''};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)close(o.id)}));
-document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='l'){e.preventDefault();openLogin()}
-  if(e.key==='Escape'){close('loginOverlay');close('vaultOverlay')}
-  if(e.key==='Enter'&&$('loginOverlay').classList.contains('show'))unlock();
-});
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o&&o.id!=='lockOverlay')close(o.id)}));
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&getSettings().autoLock&&unlocked)lock()});
+matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>{if(getSettings().theme==='system')applySettings()});
+
+migrate();applySettings();render();
+if(!localStorage.getItem(KEYS.pass)||getSettings().lockOpen)showLock(false);else unlocked=true;
 </script>
 </body>
 </html>
