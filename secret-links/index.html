@@ -32,17 +32,21 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
 .hero h1{margin:0;font-size:clamp(30px,6vw,52px);letter-spacing:-.055em;line-height:1}
 .hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
-.search{margin:18px 0}
+.quick-add{display:grid;grid-template-columns:1fr auto;gap:9px;margin:18px 0 10px;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.quick-add input{min-width:0;border:0;background:transparent;color:var(--text);padding:10px 9px;outline:none}
+.quick-add button{border:0;border-radius:13px;background:#151a35;color:#fff;padding:0 18px;font-weight:750;min-height:44px}
+body.dark .quick-add button{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
+.search{margin:10px 0 18px}
 .search input,.field input,.field select{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:13px 14px;outline:none}
 .search input:focus,.field input:focus,.field select:focus{border-color:#a6a8ae;box-shadow:0 0 0 3px rgba(64,86,255,.07)}
 .links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .links.list{grid-template-columns:1fr}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:21px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
-.card-thumb{height:150px;background:var(--soft);position:relative;overflow:hidden}
+.card-thumb{height:150px;background:linear-gradient(145deg,var(--soft),var(--panel));position:relative;overflow:hidden;display:grid;place-items:center}
 .list .card{display:grid;grid-template-columns:130px 1fr}
 .list .card-thumb{height:112px}
-.card-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.card-thumb.logo img{object-fit:contain;padding:34px}
+.card-thumb img{width:76px;height:76px;object-fit:contain;display:block;border-radius:18px;background:var(--panel);padding:8px;box-shadow:0 10px 26px rgba(20,20,30,.10)}
+.card-thumb.logo img{object-fit:contain}
 .card-body{padding:14px}
 .card-title{font-weight:750;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-url{margin-top:4px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -89,7 +93,7 @@ body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
   .card-thumb{height:125px}
 }
 @media(max-width:520px){
-  .shell{padding:15px 13px 100px}.hero{align-items:flex-start}.links{grid-template-columns:1fr 1fr;gap:9px}
+  .shell{padding:15px 13px 70px}.hero{align-items:flex-start}.quick-add{grid-template-columns:1fr auto}.quick-add button{padding:0 15px}.links{grid-template-columns:1fr 1fr;gap:9px}
   .card{border-radius:17px}.card-thumb{height:110px}.card-body{padding:11px}.card-actions{gap:5px;flex-wrap:wrap}.mini{padding:7px 8px}
   .list .card{grid-template-columns:94px 1fr}.list .card-thumb{height:100%}
   .overlay{align-items:flex-end;padding:0}.sheet{border-radius:26px 26px 0 0;max-height:93vh;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
@@ -113,11 +117,15 @@ body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
     <div><h1>Your links.</h1><p id="countLabel">0 saved links</p></div>
   </section>
 
+  <div class="quick-add">
+    <input id="quickUrl" inputmode="url" autocomplete="off" autocapitalize="off" placeholder="Paste a link here…">
+    <button id="quickAddBtn">Add</button>
+  </div>
+
   <div class="search"><input id="search" type="search" placeholder="Search links"></div>
   <section class="links" id="links"></section>
 </main>
 
-<button class="fab" id="addBtn">＋ Add link</button>
 
 <div class="overlay" id="addOverlay">
   <div class="sheet">
@@ -156,7 +164,7 @@ body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
       </div>
       <div class="setting">
         <div class="label"><b>Thumbnail</b><span>Website preview, site logo, or none.</span></div>
-        <select id="thumbSetting"><option value="preview">Preview</option><option value="logo">Logo</option><option value="none">None</option></select>
+        <select id="thumbSetting"><option value="logo">Site logo</option><option value="preview">Large preview</option><option value="none">None</option></select>
       </div>
       <div class="setting">
         <div class="label"><b>Theme</b><span>Follow your device or choose manually.</span></div>
@@ -166,11 +174,11 @@ body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
 
     <div class="settings-section">
       <div class="setting">
-        <div class="label"><b>Lock on open</b><span>Ask for your password when F Links opens.</span></div>
+        <div class="label"><b>Lock on open</b><span>Off by default. Enable only if you want it.</span></div>
         <label class="switch"><input type="checkbox" id="lockOpenSetting"><span class="slider"></span></label>
       </div>
       <div class="setting">
-        <div class="label"><b>Auto-lock when hidden</b><span>Lock after switching away from the page.</span></div>
+        <div class="label"><b>Auto-lock when hidden</b><span>Off by default. Lock when switching away only if enabled.</span></div>
         <label class="switch"><input type="checkbox" id="autoLockSetting"><span class="slider"></span></label>
       </div>
     </div>
@@ -202,10 +210,13 @@ body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
 <script>
 const $=id=>document.getElementById(id);
 const KEYS={links:'flinks_links_v3',pass:'flinks_pass_v3',settings:'flinks_settings_v3'};
-const defaults={layout:'grid',thumb:'preview',theme:'system',lockOpen:true,autoLock:true};
+const defaults={layout:'grid',thumb:'logo',theme:'system',lockOpen:false,autoLock:false};
 let editing=-1, unlocked=false;
 
 function migrate(){
+  if(!localStorage.getItem('flinks_no_auto_lock_v1')){
+    const s=getSettings();s.lockOpen=false;s.autoLock=false;s.thumb='logo';localStorage.setItem(KEYS.settings,JSON.stringify(s));localStorage.setItem('flinks_no_auto_lock_v1','1');
+  }
   if(!localStorage.getItem(KEYS.links)){
     const old=localStorage.getItem('flowboard_links_v2')||localStorage.getItem('secret_links_v1');
     if(old){try{
@@ -227,7 +238,7 @@ function titleFromUrl(url){const h=host(url).split('.')[0]||'Link';return h.char
 function favicon(url){return 'https://www.google.com/s2/favicons?sz=128&domain_url='+encodeURIComponent(normalize(url))}
 function screenshot(url){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(normalize(url))+'?w=720'}
 async function hash(v){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function thumbFor(item,mode){if(item.thumb)return item.thumb;if(mode==='logo')return favicon(item.url);if(mode==='preview')return screenshot(item.url);return''}
+function thumbFor(item,mode){if(item.thumb)return item.thumb;if(mode==='preview')return screenshot(item.url);return favicon(item.url)}
 
 function applySettings(){
   const s=getSettings();
@@ -241,13 +252,13 @@ function render(){
   const s=getSettings(),q=$('search').value.trim().toLowerCase(),items=getLinks().map((x,i)=>({...x,_i:i})).filter(x=>!q||(x.name||'').toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
   const all=getLinks();$('countLabel').textContent=all.length+' saved '+(all.length===1?'link':'links');
   const box=$('links');box.innerHTML='';
-  if(!items.length){box.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links yet. Tap “Add link” to save one.')+'</div>';return}
+  if(!items.length){box.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links yet. Paste a URL above and tap Add.')+'</div>';return}
   items.forEach(item=>{
     const card=document.createElement('article');card.className='card';
     if(s.thumb!=='none'){
       const th=document.createElement('div');th.className='card-thumb'+(s.thumb==='logo'?' logo':'');
-      const img=document.createElement('img');img.src=thumbFor(item,s.thumb);img.alt='';
-      img.onerror=()=>{if(img.src!==favicon(item.url)){img.src=favicon(item.url);th.classList.add('logo')}};
+      const img=document.createElement('img');img.src=thumbFor(item,s.thumb);img.alt='';let triedFav=false;
+      img.onerror=()=>{if(!triedFav){triedFav=true;img.src=favicon(item.url);th.classList.add('logo')}else{img.src='./logo.svg'}};
       th.appendChild(img);card.appendChild(th);
     }
     const body=document.createElement('div');body.className='card-body';
@@ -264,7 +275,7 @@ function resetAdd(){editing=-1;$('urlInput').value='';$('nameInput').value='';$(
 function updatePreview(){
   const u=normalize($('urlInput').value);if(!u){$('autoPreview').style.display='none';return}
   $('autoPreview').style.display='flex';$('previewName').textContent=$('nameInput').value.trim()||titleFromUrl(u);$('previewUrl').textContent=host(u);
-  const mode=getSettings().thumb;const custom=$('thumbInput').value.trim();$('previewImg').src=custom||(mode==='logo'?favicon(u):screenshot(u));
+  const mode=getSettings().thumb;const custom=$('thumbInput').value.trim();$('previewImg').src=custom||(mode==='preview'?screenshot(u):favicon(u));
   $('previewImg').onerror=()=>{$('previewImg').src=favicon(u)}
 }
 function saveLink(){
@@ -273,9 +284,14 @@ function saveLink(){
   const item={url,name:$('nameInput').value.trim()||titleFromUrl(url),thumb:$('thumbInput').value.trim()};
   const a=getLinks();if(editing>=0)a[editing]=item;else a.unshift(item);setLinks(a);close('addOverlay');resetAdd();
 }
+function quickAdd(){
+  const input=$('quickUrl'),url=normalize(input.value);if(!url){input.focus();return}
+  try{new URL(url)}catch{input.focus();return}
+  const a=getLinks();a.unshift({url,name:titleFromUrl(url),thumb:''});setLinks(a);input.value='';input.focus();
+}
 function editLink(i){const x=getLinks()[i];editing=i;$('urlInput').value=x.url;$('nameInput').value=x.name||'';$('thumbInput').value=x.thumb||'';$('moreOptions').classList.add('show');$('moreBtn').textContent='Hide options';$('addTitle').textContent='Edit link';$('saveLinkBtn').textContent='Save changes';$('cancelEdit').style.display='inline-block';updatePreview();open('addOverlay')}
 function deleteLink(i){if(!confirm('Delete this link?'))return;const a=getLinks();a.splice(i,1);setLinks(a)}
-function lock(){unlocked=false;showLock(false)}
+function lock(){unlocked=false;showLock(!localStorage.getItem(KEYS.pass))}
 function showLock(forceSetup){
   const setup=forceSetup||!localStorage.getItem(KEYS.pass);
   $('lockOverlay').classList.add('show');$('newPassWrap').style.display=setup?'block':'none';$('passLabel').textContent=setup?'Confirm password':'Password';$('lockText').textContent=setup?'Create a password for this device.':'Enter your password.';$('unlockBtn').textContent=setup?'Create & unlock':'Unlock';$('lockError').textContent='';$('newPass').value='';$('pass').value='';
@@ -290,7 +306,8 @@ async function unlock(){
   unlocked=true;close('lockOverlay');render();
 }
 
-$('addBtn').onclick=()=>{resetAdd();open('addOverlay');setTimeout(()=>$('urlInput').focus(),80)};
+$('quickAddBtn').onclick=quickAdd;
+$('quickUrl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickAdd()}});
 $('settingsBtn').onclick=()=>{applySettings();open('settingsOverlay')};
 $('lockBtn').onclick=lock;
 $('saveLinkBtn').onclick=saveLink;
@@ -313,7 +330,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&getSetting
 matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>{if(getSettings().theme==='system')applySettings()});
 
 migrate();applySettings();render();
-if(!localStorage.getItem(KEYS.pass)||getSettings().lockOpen)showLock(false);else unlocked=true;
+unlocked=true;
+if(getSettings().lockOpen&&localStorage.getItem(KEYS.pass))showLock(false);
 </script>
 </body>
 </html>
