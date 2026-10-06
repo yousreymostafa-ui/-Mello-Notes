@@ -3,335 +3,260 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111a3a">
+<meta name="theme-color" content="#f4f4f4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="F Links">
+<meta name="apple-mobile-web-app-title" content="Notes">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./logo.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./logo.svg">
-<title>F Links</title>
+<title>Notes</title>
 <style>
 :root{
-  --bg:#f4f4f1;--panel:#fff;--soft:#ececea;--text:#16171a;--muted:#7b7d83;
-  --line:#e6e6e2;--accent:#111a3a;--shadow:0 14px 40px rgba(20,20,30,.07);
+  --bg:#f4f4f4;--panel:#fff;--soft:#eeeeee;--text:#171717;--muted:#8a8a8a;
+  --line:#e4e4e4;--shadow:0 8px 26px rgba(0,0,0,.05);--accent:#555;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
-body.dark{--bg:#0f1117;--panel:#181b23;--soft:#20242d;--text:#f5f6f8;--muted:#989da8;--line:#2a2f39;--accent:#f4f6ff;--shadow:0 16px 46px rgba(0,0,0,.25)}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.shell{max-width:980px;margin:auto;padding:18px 16px 100px}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.shell{max-width:760px;margin:auto;padding:18px 16px 90px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
-.brand{display:flex;align-items:center;gap:11px}
-.brand img{width:42px;height:42px;border-radius:13px;display:block}
-.brand-copy strong{display:block;font-size:15px;letter-spacing:-.02em}
-.brand-copy span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.head-actions{display:flex;gap:8px}
-.icon-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--panel);color:var(--text);display:grid;place-items:center;font-size:17px}
-.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
-.hero h1{margin:0;font-size:clamp(30px,6vw,52px);letter-spacing:-.055em;line-height:1}
-.hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
-.quick-add{display:grid;grid-template-columns:1fr auto;gap:9px;margin:18px 0 10px;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-.quick-add input{min-width:0;border:0;background:transparent;color:var(--text);padding:10px 9px;outline:none}
-.quick-add button{border:0;border-radius:13px;background:#151a35;color:#fff;padding:0 18px;font-weight:750;min-height:44px}
-body.dark .quick-add button{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
-.search{margin:10px 0 18px}
-.search input,.field input,.field select{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:13px 14px;outline:none}
-.search input:focus,.field input:focus,.field select:focus{border-color:#a6a8ae;box-shadow:0 0 0 3px rgba(64,86,255,.07)}
-.links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.links.list{grid-template-columns:1fr}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:21px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
-.card-thumb{height:150px;background:linear-gradient(145deg,var(--soft),var(--panel));position:relative;overflow:hidden;display:grid;place-items:center}
-.list .card{display:grid;grid-template-columns:130px 1fr}
-.list .card-thumb{height:112px}
-.card-thumb img{width:76px;height:76px;object-fit:contain;display:block;border-radius:18px;background:var(--panel);padding:8px;box-shadow:0 10px 26px rgba(20,20,30,.10)}
-.card-thumb.logo img{object-fit:contain}
-.card-body{padding:14px}
-.card-title{font-weight:750;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-url{margin-top:4px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-actions{display:flex;gap:7px;margin-top:13px}
-.mini{border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:10px;padding:8px 10px;font-size:11px}
-.empty{grid-column:1/-1;padding:44px 20px;border:1px dashed var(--line);border-radius:20px;text-align:center;color:var(--muted);font-size:13px}
-.fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));border:0;border-radius:18px;background:#151a35;color:white;padding:15px 18px;font-weight:750;box-shadow:0 16px 38px rgba(12,17,45,.28);z-index:20}
-body.dark .fab{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
-.overlay{position:fixed;inset:0;background:rgba(10,12,18,.38);backdrop-filter:blur(11px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+.brand{display:flex;align-items:center;gap:11px;user-select:none;-webkit-user-select:none}
+.brand img{width:42px;height:42px;border-radius:12px;display:block}
+.brand strong{display:block;font-size:16px;letter-spacing:-.02em}
+.brand span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.header-btn{border:0;background:transparent;color:#555;font-size:26px;line-height:1;width:40px;height:40px;border-radius:50%}
+.header-btn:active{background:var(--soft)}
+h1{font-size:38px;letter-spacing:-.055em;margin:0 0 16px}
+.search{position:relative;margin-bottom:18px}
+.search input{width:100%;border:0;background:#e9e9e9;border-radius:14px;padding:12px 14px 12px 40px;outline:none;color:var(--text)}
+.search span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#8d8d8d}
+.notes{display:grid;gap:10px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px 16px;box-shadow:var(--shadow)}
+.note-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.note h3{margin:0;font-size:15px;letter-spacing:-.02em}
+.note p{margin:7px 0 0;color:#656565;font-size:13px;line-height:1.55;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.note time{display:block;margin-top:11px;font-size:10px;color:#aaa}
+.note-menu{border:0;background:transparent;color:#aaa;font-size:18px;padding:0 3px}
+.empty{padding:42px 20px;text-align:center;color:var(--muted);font-size:13px}
+.fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));border:0;width:56px;height:56px;border-radius:50%;background:#555;color:#fff;font-size:28px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
 .overlay.show{display:flex}
-.sheet{width:min(100%,460px);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 28px 80px rgba(0,0,0,.22)}
-.sheet.wide{width:min(100%,620px)}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.sheet-head h2{font-size:20px;letter-spacing:-.04em;margin:0}
-.sheet-head p{font-size:11px;color:var(--muted);margin:4px 0 0}
-.close{border:1px solid var(--line);background:var(--soft);color:var(--text);width:38px;height:38px;border-radius:12px;font-size:18px}
+.sheet{width:min(100%,470px);max-height:90vh;overflow:auto;background:#fff;border-radius:24px;padding:20px;box-shadow:0 26px 80px rgba(0,0,0,.22)}
+.sheet.wide{width:min(100%,760px)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sheet-head h2{margin:0;font-size:20px;letter-spacing:-.04em}
+.sheet-head p{margin:4px 0 0;color:#888;font-size:11px}
+.close{border:0;background:#efefef;width:38px;height:38px;border-radius:12px;font-size:18px}
 .field{margin-bottom:12px}
-.field label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin:0 0 7px}
-.primary{width:100%;border:0;border-radius:14px;padding:13px 15px;background:#151a35;color:#fff;font-weight:750}
-body.dark .primary{background:linear-gradient(135deg,#23c6f2,#7d38ff)}
-.secondary{border:1px solid var(--line);border-radius:13px;padding:11px 13px;background:var(--soft);color:var(--text);font-weight:650}
+.field label{display:block;font-size:11px;color:#777;font-weight:700;margin-bottom:7px}
+.field input,.field textarea{width:100%;border:1px solid #e2e2e2;background:#fafafa;border-radius:13px;padding:12px 13px;outline:none}
+.field textarea{min-height:150px;resize:vertical}
+.primary{border:0;background:#555;color:#fff;border-radius:13px;padding:12px 16px;font-weight:700}
+.secondary{border:1px solid #e0e0e0;background:#f3f3f3;color:#222;border-radius:12px;padding:10px 13px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
-.more{display:none;margin-top:12px}
-.more.show{display:block}
-.preview{display:flex;align-items:center;gap:12px;background:var(--soft);border-radius:16px;padding:10px;margin:6px 0 14px}
-.preview img{width:58px;height:58px;border-radius:13px;object-fit:cover;background:var(--panel)}
-.preview div{min-width:0}
-.preview b,.preview span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.preview b{font-size:13px}.preview span{font-size:11px;color:var(--muted);margin-top:4px}
-.settings-section{padding:14px 0;border-top:1px solid var(--line)}
-.settings-section:first-of-type{border-top:0;padding-top:0}
-.setting{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 0}
-.setting .label b{display:block;font-size:13px}.setting .label span{display:block;font-size:11px;color:var(--muted);margin-top:3px}
-.setting select{border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:11px;padding:9px 10px}
-.switch{position:relative;width:44px;height:26px;flex:0 0 auto}
-.switch input{display:none}.slider{position:absolute;inset:0;background:#c9cbd0;border-radius:99px;transition:.2s}.slider:after{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.18)}
-.switch input:checked+.slider{background:#5367ff}.switch input:checked+.slider:after{transform:translateX(18px)}
-.note{font-size:11px;color:var(--muted);line-height:1.55}
-.lock-logo{width:72px;height:72px;border-radius:22px;display:block;margin:0 auto 18px}
-.center{text-align:center}
-.error{min-height:18px;margin-top:8px;color:#b44848;font-size:11px}
-@media(max-width:760px){
-  .links{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .card-thumb{height:125px}
-}
-@media(max-width:520px){
-  .shell{padding:15px 13px 70px}.hero{align-items:flex-start}.quick-add{grid-template-columns:1fr auto}.quick-add button{padding:0 15px}.links{grid-template-columns:1fr 1fr;gap:9px}
-  .card{border-radius:17px}.card-thumb{height:110px}.card-body{padding:11px}.card-actions{gap:5px;flex-wrap:wrap}.mini{padding:7px 8px}
-  .list .card{grid-template-columns:94px 1fr}.list .card-thumb{height:100%}
-  .overlay{align-items:flex-end;padding:0}.sheet{border-radius:26px 26px 0 0;max-height:93vh;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+
+/* hidden vault */
+.vault-shell{background:#121212;color:#f5f5f5}
+.vault-shell .sheet-head p,.vault-shell .muted{color:#8d8d8d}
+.vault-shell .close{background:#252525;color:#eee}
+.vault-add{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:12px}
+.vault-add input,.vault-search input{width:100%;border:1px solid #2d2d2d;background:#1d1d1d;color:#f7f7f7;border-radius:13px;padding:12px 13px;outline:none}
+.vault-add button{border:0;border-radius:13px;background:#e5e5e5;color:#111;padding:0 17px;font-weight:750}
+.vault-search{margin-bottom:14px}
+.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.link-card{background:#1c1c1c;border:1px solid #292929;border-radius:17px;padding:12px;display:grid;grid-template-columns:52px 1fr;gap:11px;align-items:center}
+.link-logo{width:52px;height:52px;border-radius:13px;background:#2a2a2a;display:grid;place-items:center;overflow:hidden}
+.link-logo img{width:36px;height:36px;object-fit:contain;border-radius:8px}
+.link-meta{min-width:0}
+.link-meta b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-meta span{display:block;color:#888;font-size:10px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-actions{grid-column:1/-1;display:flex;gap:6px}
+.link-actions button{border:1px solid #303030;background:#242424;color:#ddd;border-radius:9px;padding:7px 9px;font-size:10px}
+.vault-tools{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid #292929}
+.vault-tools span{font-size:10px;color:#777}
+.vault-tools button{border:1px solid #303030;background:#222;color:#ddd;border-radius:10px;padding:8px 10px;font-size:10px}
+.secret-hint{font-size:10px;color:#666;margin-top:10px}
+
+@media(max-width:560px){
+  .shell{padding:15px 13px 86px}
+  .overlay{align-items:flex-end;padding:0}
+  .sheet{border-radius:24px 24px 0 0;max-height:93vh;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  .link-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<main class="shell" id="app">
+
+<main class="shell">
   <header>
-    <div class="brand">
-      <img src="./logo.svg" alt="F Links logo">
-      <div class="brand-copy"><strong>F Links</strong><span>private link space</span></div>
+    <div class="brand" id="secretTrigger">
+      <img src="./logo.svg" alt="F">
+      <div><strong>Notes</strong><span>Personal notes</span></div>
     </div>
-    <div class="head-actions">
-      <button class="icon-btn" id="lockBtn" title="Lock">⌁</button>
-      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
-    </div>
+    <button class="header-btn" id="newNoteTop" aria-label="New note">＋</button>
   </header>
 
-  <section class="hero">
-    <div><h1>Your links.</h1><p id="countLabel">0 saved links</p></div>
-  </section>
-
-  <div class="quick-add">
-    <input id="quickUrl" inputmode="url" autocomplete="off" autocapitalize="off" placeholder="Paste a link here…">
-    <button id="quickAddBtn">Add</button>
+  <h1>Notes</h1>
+  <div class="search">
+    <span>⌕</span>
+    <input id="noteSearch" placeholder="Search notes">
   </div>
 
-  <div class="search"><input id="search" type="search" placeholder="Search links"></div>
-  <section class="links" id="links"></section>
+  <section class="notes" id="notes"></section>
 </main>
 
+<button class="fab" id="newNoteFab" aria-label="New note">＋</button>
 
-<div class="overlay" id="addOverlay">
+<div class="overlay" id="noteOverlay">
   <div class="sheet">
     <div class="sheet-head">
-      <div><h2 id="addTitle">Add link</h2><p>Paste a URL. Thumbnail and logo are automatic.</p></div>
-      <button class="close" data-close="addOverlay">×</button>
+      <div><h2 id="noteSheetTitle">New note</h2><p>Write anything you want to remember.</p></div>
+      <button class="close" data-close="noteOverlay">×</button>
     </div>
-    <div class="field"><label>URL</label><input id="urlInput" inputmode="url" placeholder="example.com"></div>
-    <div class="preview" id="autoPreview" style="display:none">
-      <img id="previewImg" alt="">
-      <div><b id="previewName"></b><span id="previewUrl"></span></div>
-    </div>
-    <button class="secondary" id="moreBtn">More options</button>
-    <div class="more" id="moreOptions">
-      <div class="field"><label>Name</label><input id="nameInput" placeholder="Optional custom name"></div>
-      <div class="field"><label>Custom thumbnail URL</label><input id="thumbInput" inputmode="url" placeholder="Optional"></div>
-    </div>
-    <div class="row" style="margin-top:14px">
-      <button class="primary" id="saveLinkBtn">Save link</button>
-      <button class="secondary" id="cancelEdit" style="display:none">Cancel edit</button>
+    <div class="field"><label>Title</label><input id="noteTitle" placeholder="Title"></div>
+    <div class="field"><label>Note</label><textarea id="noteBody" placeholder="Start writing…"></textarea></div>
+    <div class="row">
+      <button class="primary" id="saveNote">Save note</button>
+      <button class="secondary" id="deleteNoteBtn" style="display:none">Delete</button>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="settingsOverlay">
-  <div class="sheet wide">
+<div class="overlay" id="vaultOverlay">
+  <div class="sheet wide vault-shell">
     <div class="sheet-head">
-      <div><h2>Settings</h2><p>Control how F Links looks and locks.</p></div>
-      <button class="close" data-close="settingsOverlay">×</button>
+      <div><h2>Private Space</h2><p>Saved links</p></div>
+      <button class="close" data-close="vaultOverlay">×</button>
     </div>
 
-    <div class="settings-section">
-      <div class="setting">
-        <div class="label"><b>Layout</b><span>Choose how saved links are shown.</span></div>
-        <select id="layoutSetting"><option value="grid">Grid</option><option value="list">List</option></select>
-      </div>
-      <div class="setting">
-        <div class="label"><b>Thumbnail</b><span>Website preview, site logo, or none.</span></div>
-        <select id="thumbSetting"><option value="logo">Site logo</option><option value="preview">Large preview</option><option value="none">None</option></select>
-      </div>
-      <div class="setting">
-        <div class="label"><b>Theme</b><span>Follow your device or choose manually.</span></div>
-        <select id="themeSetting"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
-      </div>
+    <div class="vault-add">
+      <input id="vaultUrl" inputmode="url" autocomplete="off" autocapitalize="off" placeholder="Paste link…">
+      <button id="vaultAdd">Add</button>
     </div>
 
-    <div class="settings-section">
-      <div class="setting">
-        <div class="label"><b>Lock on open</b><span>Off by default. Enable only if you want it.</span></div>
-        <label class="switch"><input type="checkbox" id="lockOpenSetting"><span class="slider"></span></label>
-      </div>
-      <div class="setting">
-        <div class="label"><b>Auto-lock when hidden</b><span>Off by default. Lock when switching away only if enabled.</span></div>
-        <label class="switch"><input type="checkbox" id="autoLockSetting"><span class="slider"></span></label>
-      </div>
-    </div>
+    <div class="vault-search"><input id="vaultSearch" placeholder="Search links"></div>
+    <section class="link-grid" id="linkGrid"></section>
 
-    <div class="settings-section">
+    <div class="vault-tools">
+      <span id="linkCount">0 links</span>
       <div class="row">
-        <button class="secondary" id="changePassBtn">Change password</button>
-        <button class="secondary" id="exportBtn">Export links</button>
-        <button class="secondary" id="importBtn">Import links</button>
-        <input id="importFile" type="file" accept="application/json" hidden>
+        <button id="exportLinks">Export</button>
+        <button id="clearLinks">Clear all</button>
       </div>
-      <p class="note">Your links and password stay in this browser's local storage. The password is hashed, but the links themselves are not encrypted.</p>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="lockOverlay">
-  <div class="sheet center">
-    <img class="lock-logo" src="./logo.svg" alt="">
-    <h2 id="lockTitle" style="margin:0 0 7px;letter-spacing:-.04em">F Links</h2>
-    <p class="note" id="lockText" style="margin:0 0 18px">Enter your password.</p>
-    <div class="field" id="newPassWrap" style="display:none;text-align:left"><label>Create password</label><input id="newPass" type="password" autocomplete="new-password"></div>
-    <div class="field" style="text-align:left"><label id="passLabel">Password</label><input id="pass" type="password" autocomplete="current-password"></div>
-    <button class="primary" id="unlockBtn">Unlock</button>
-    <div class="error" id="lockError"></div>
+<div class="overlay" id="editLinkOverlay">
+  <div class="sheet vault-shell">
+    <div class="sheet-head">
+      <div><h2>Edit link</h2><p>Change the title or URL.</p></div>
+      <button class="close" data-close="editLinkOverlay">×</button>
+    </div>
+    <div class="field"><label>Title</label><input id="editLinkTitle"></div>
+    <div class="field"><label>URL</label><input id="editLinkUrl" inputmode="url"></div>
+    <div class="row">
+      <button class="primary" id="saveLinkEdit">Save</button>
+      <button class="secondary" id="deleteLinkEdit">Delete</button>
+    </div>
   </div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-const KEYS={links:'flinks_links_v3',pass:'flinks_pass_v3',settings:'flinks_settings_v3'};
-const defaults={layout:'grid',thumb:'logo',theme:'system',lockOpen:false,autoLock:false};
-let editing=-1, unlocked=false;
+const NOTE_KEY='fnotes_v1';
+const LINK_KEY='flinks_links_v3';
+let noteEdit=-1, linkEdit=-1, pressTimer=null;
 
-function migrate(){
-  if(!localStorage.getItem('flinks_no_auto_lock_v1')){
-    const s=getSettings();s.lockOpen=false;s.autoLock=false;s.thumb='logo';localStorage.setItem(KEYS.settings,JSON.stringify(s));localStorage.setItem('flinks_no_auto_lock_v1','1');
-  }
-  if(!localStorage.getItem(KEYS.links)){
-    const old=localStorage.getItem('flowboard_links_v2')||localStorage.getItem('secret_links_v1');
-    if(old){try{
-      const arr=JSON.parse(old).map(x=>({name:x.name||x.title||titleFromUrl(x.url),url:x.url,thumb:x.thumb||''}));
-      localStorage.setItem(KEYS.links,JSON.stringify(arr));
-    }catch{}}
-  }
-  if(!localStorage.getItem(KEYS.pass)&&localStorage.getItem('flowboard_pass_v2')){
-    localStorage.setItem(KEYS.pass,localStorage.getItem('flowboard_pass_v2'));
-  }
-}
-function getSettings(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEYS.settings)||'{}')}}catch{return {...defaults}}}
-function setSettings(s){localStorage.setItem(KEYS.settings,JSON.stringify(s));applySettings();render()}
-function getLinks(){try{return JSON.parse(localStorage.getItem(KEYS.links)||'[]')}catch{return[]}}
-function setLinks(v){localStorage.setItem(KEYS.links,JSON.stringify(v));render()}
+function getNotes(){try{return JSON.parse(localStorage.getItem(NOTE_KEY)||'[]')}catch{return[]}}
+function setNotes(v){localStorage.setItem(NOTE_KEY,JSON.stringify(v));renderNotes()}
+function getLinks(){try{return JSON.parse(localStorage.getItem(LINK_KEY)||'[]')}catch{return[]}}
+function setLinks(v){localStorage.setItem(LINK_KEY,JSON.stringify(v));renderLinks()}
+function open(id){$(id).classList.add('show')}
+function close(id){$(id).classList.remove('show')}
 function normalize(v){v=(v||'').trim();if(!v)return'';return /^https?:\/\//i.test(v)?v:'https://'+v}
 function host(url){try{return new URL(normalize(url)).hostname.replace(/^www\./,'')}catch{return url}}
 function titleFromUrl(url){const h=host(url).split('.')[0]||'Link';return h.charAt(0).toUpperCase()+h.slice(1)}
 function favicon(url){return 'https://www.google.com/s2/favicons?sz=128&domain_url='+encodeURIComponent(normalize(url))}
-function screenshot(url){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(normalize(url))+'?w=720'}
-async function hash(v){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function thumbFor(item,mode){if(item.thumb)return item.thumb;if(mode==='preview')return screenshot(item.url);return favicon(item.url)}
+function fmt(ts){return new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(ts))}
 
-function applySettings(){
-  const s=getSettings();
-  let dark=s.theme==='dark'||(s.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
-  document.body.classList.toggle('dark',dark);
-  $('links').classList.toggle('list',s.layout==='list');
-  $('layoutSetting').value=s.layout;$('thumbSetting').value=s.thumb;$('themeSetting').value=s.theme;
-  $('lockOpenSetting').checked=s.lockOpen;$('autoLockSetting').checked=s.autoLock;
-}
-function render(){
-  const s=getSettings(),q=$('search').value.trim().toLowerCase(),items=getLinks().map((x,i)=>({...x,_i:i})).filter(x=>!q||(x.name||'').toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
-  const all=getLinks();$('countLabel').textContent=all.length+' saved '+(all.length===1?'link':'links');
-  const box=$('links');box.innerHTML='';
-  if(!items.length){box.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links yet. Paste a URL above and tap Add.')+'</div>';return}
-  items.forEach(item=>{
-    const card=document.createElement('article');card.className='card';
-    if(s.thumb!=='none'){
-      const th=document.createElement('div');th.className='card-thumb'+(s.thumb==='logo'?' logo':'');
-      const img=document.createElement('img');img.src=thumbFor(item,s.thumb);img.alt='';let triedFav=false;
-      img.onerror=()=>{if(!triedFav){triedFav=true;img.src=favicon(item.url);th.classList.add('logo')}else{img.src='./logo.svg'}};
-      th.appendChild(img);card.appendChild(th);
-    }
-    const body=document.createElement('div');body.className='card-body';
-    const name=document.createElement('div');name.className='card-title';name.textContent=item.name||titleFromUrl(item.url);
-    const url=document.createElement('div');url.className='card-url';url.textContent=host(item.url);
-    const acts=document.createElement('div');acts.className='card-actions';
-    [['Open',()=>window.open(item.url,'_blank','noopener,noreferrer')],['Edit',()=>editLink(item._i)],['Delete',()=>deleteLink(item._i)]].forEach(([t,fn])=>{const b=document.createElement('button');b.className='mini';b.textContent=t;b.onclick=fn;acts.appendChild(b)});
-    body.append(name,url,acts);card.appendChild(body);box.appendChild(card);
+function renderNotes(){
+  const q=$('noteSearch').value.trim().toLowerCase();
+  const all=getNotes();
+  const items=all.map((n,i)=>({...n,_i:i})).filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.body||'').toLowerCase().includes(q));
+  const box=$('notes');box.innerHTML='';
+  if(!items.length){box.innerHTML='<div class="empty">'+(all.length?'No matching notes.':'No notes yet.')+'</div>';return}
+  items.forEach(n=>{
+    const card=document.createElement('article');card.className='note';
+    const head=document.createElement('div');head.className='note-head';
+    const title=document.createElement('h3');title.textContent=n.title||'Untitled';
+    const menu=document.createElement('button');menu.className='note-menu';menu.textContent='•••';menu.onclick=()=>editNote(n._i);
+    head.append(title,menu);
+    const p=document.createElement('p');p.textContent=n.body||'';
+    const t=document.createElement('time');t.textContent=fmt(n.updated||n.created||Date.now());
+    card.append(head,p,t);card.onclick=e=>{if(e.target!==menu)editNote(n._i)};
+    box.appendChild(card);
   });
 }
-function open(id){$(id).classList.add('show')}
-function close(id){$(id).classList.remove('show')}
-function resetAdd(){editing=-1;$('urlInput').value='';$('nameInput').value='';$('thumbInput').value='';$('moreOptions').classList.remove('show');$('moreBtn').textContent='More options';$('autoPreview').style.display='none';$('addTitle').textContent='Add link';$('saveLinkBtn').textContent='Save link';$('cancelEdit').style.display='none'}
-function updatePreview(){
-  const u=normalize($('urlInput').value);if(!u){$('autoPreview').style.display='none';return}
-  $('autoPreview').style.display='flex';$('previewName').textContent=$('nameInput').value.trim()||titleFromUrl(u);$('previewUrl').textContent=host(u);
-  const mode=getSettings().thumb;const custom=$('thumbInput').value.trim();$('previewImg').src=custom||(mode==='preview'?screenshot(u):favicon(u));
-  $('previewImg').onerror=()=>{$('previewImg').src=favicon(u)}
+function newNote(){noteEdit=-1;$('noteSheetTitle').textContent='New note';$('noteTitle').value='';$('noteBody').value='';$('deleteNoteBtn').style.display='none';open('noteOverlay');setTimeout(()=>$('noteTitle').focus(),80)}
+function editNote(i){const n=getNotes()[i];if(!n)return;noteEdit=i;$('noteSheetTitle').textContent='Edit note';$('noteTitle').value=n.title||'';$('noteBody').value=n.body||'';$('deleteNoteBtn').style.display='inline-block';open('noteOverlay')}
+function saveNote(){
+  const title=$('noteTitle').value.trim(),body=$('noteBody').value.trim();
+  if(!title&&!body){close('noteOverlay');return}
+  const a=getNotes(),now=Date.now();
+  if(noteEdit>=0)a[noteEdit]={...a[noteEdit],title,body,updated:now};
+  else a.unshift({title,body,created:now,updated:now});
+  setNotes(a);close('noteOverlay');
 }
-function saveLink(){
-  const url=normalize($('urlInput').value);if(!url){$('urlInput').focus();return}
-  try{new URL(url)}catch{alert('Please enter a valid URL.');return}
-  const item={url,name:$('nameInput').value.trim()||titleFromUrl(url),thumb:$('thumbInput').value.trim()};
-  const a=getLinks();if(editing>=0)a[editing]=item;else a.unshift(item);setLinks(a);close('addOverlay');resetAdd();
+function deleteNote(){
+  if(noteEdit<0)return;if(!confirm('Delete this note?'))return;
+  const a=getNotes();a.splice(noteEdit,1);setNotes(a);close('noteOverlay');
 }
-function quickAdd(){
-  const input=$('quickUrl'),url=normalize(input.value);if(!url){input.focus();return}
+
+function renderLinks(){
+  const q=$('vaultSearch').value.trim().toLowerCase(),all=getLinks();
+  $('linkCount').textContent=all.length+' '+(all.length===1?'link':'links');
+  const items=all.map((x,i)=>({...x,_i:i})).filter(x=>!q||(x.name||'').toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
+  const box=$('linkGrid');box.innerHTML='';
+  if(!items.length){box.innerHTML='<div class="empty" style="grid-column:1/-1;color:#777;border:1px dashed #303030;border-radius:16px">'+(all.length?'No matching links.':'No saved links yet.')+'</div>';return}
+  items.forEach(x=>{
+    const card=document.createElement('article');card.className='link-card';
+    const logo=document.createElement('div');logo.className='link-logo';
+    const img=document.createElement('img');img.src=favicon(x.url);img.alt='';img.onerror=()=>{img.src='./logo.svg'};logo.appendChild(img);
+    const meta=document.createElement('div');meta.className='link-meta';
+    const b=document.createElement('b');b.textContent=x.name||titleFromUrl(x.url);
+    const s=document.createElement('span');s.textContent=host(x.url);meta.append(b,s);
+    const acts=document.createElement('div');acts.className='link-actions';
+    [['Open',()=>window.open(x.url,'_blank','noopener,noreferrer')],['Edit',()=>editLink(x._i)],['Delete',()=>deleteLink(x._i)]].forEach(([t,fn])=>{const bt=document.createElement('button');bt.textContent=t;bt.onclick=fn;acts.appendChild(bt)});
+    card.append(logo,meta,acts);box.appendChild(card);
+  });
+}
+function addLink(){
+  const input=$('vaultUrl'),url=normalize(input.value);if(!url){input.focus();return}
   try{new URL(url)}catch{input.focus();return}
   const a=getLinks();a.unshift({url,name:titleFromUrl(url),thumb:''});setLinks(a);input.value='';input.focus();
 }
-function editLink(i){const x=getLinks()[i];editing=i;$('urlInput').value=x.url;$('nameInput').value=x.name||'';$('thumbInput').value=x.thumb||'';$('moreOptions').classList.add('show');$('moreBtn').textContent='Hide options';$('addTitle').textContent='Edit link';$('saveLinkBtn').textContent='Save changes';$('cancelEdit').style.display='inline-block';updatePreview();open('addOverlay')}
+function editLink(i){const x=getLinks()[i];if(!x)return;linkEdit=i;$('editLinkTitle').value=x.name||titleFromUrl(x.url);$('editLinkUrl').value=x.url;open('editLinkOverlay')}
+function saveLinkEdit(){
+  if(linkEdit<0)return;const url=normalize($('editLinkUrl').value);if(!url)return;
+  const a=getLinks();a[linkEdit]={...a[linkEdit],url,name:$('editLinkTitle').value.trim()||titleFromUrl(url)};setLinks(a);close('editLinkOverlay');
+}
 function deleteLink(i){if(!confirm('Delete this link?'))return;const a=getLinks();a.splice(i,1);setLinks(a)}
-function lock(){unlocked=false;showLock(!localStorage.getItem(KEYS.pass))}
-function showLock(forceSetup){
-  const setup=forceSetup||!localStorage.getItem(KEYS.pass);
-  $('lockOverlay').classList.add('show');$('newPassWrap').style.display=setup?'block':'none';$('passLabel').textContent=setup?'Confirm password':'Password';$('lockText').textContent=setup?'Create a password for this device.':'Enter your password.';$('unlockBtn').textContent=setup?'Create & unlock':'Unlock';$('lockError').textContent='';$('newPass').value='';$('pass').value='';
-  setTimeout(()=>$(setup?'newPass':'pass').focus(),100);
-}
-async function unlock(){
-  const stored=localStorage.getItem(KEYS.pass);
-  if(!stored){
-    const a=$('newPass').value,b=$('pass').value;if(a.length<4){$('lockError').textContent='Use at least 4 characters.';return}if(a!==b){$('lockError').textContent='Passwords do not match.';return}
-    localStorage.setItem(KEYS.pass,await hash(a));
-  }else if(await hash($('pass').value)!==stored){$('lockError').textContent='Incorrect password.';return}
-  unlocked=true;close('lockOverlay');render();
-}
+function exportLinks(){const blob=new Blob([JSON.stringify(getLinks(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='links-backup.json';a.click();URL.revokeObjectURL(a.href)}
 
-$('quickAddBtn').onclick=quickAdd;
-$('quickUrl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickAdd()}});
-$('settingsBtn').onclick=()=>{applySettings();open('settingsOverlay')};
-$('lockBtn').onclick=lock;
-$('saveLinkBtn').onclick=saveLink;
-$('cancelEdit').onclick=()=>{resetAdd();close('addOverlay')};
-$('moreBtn').onclick=()=>{const x=$('moreOptions');x.classList.toggle('show');$('moreBtn').textContent=x.classList.contains('show')?'Hide options':'More options'};
-$('urlInput').oninput=updatePreview;$('nameInput').oninput=updatePreview;$('thumbInput').oninput=updatePreview;$('search').oninput=render;
-$('layoutSetting').onchange=e=>setSettings({...getSettings(),layout:e.target.value});
-$('thumbSetting').onchange=e=>setSettings({...getSettings(),thumb:e.target.value});
-$('themeSetting').onchange=e=>setSettings({...getSettings(),theme:e.target.value});
-$('lockOpenSetting').onchange=e=>setSettings({...getSettings(),lockOpen:e.target.checked});
-$('autoLockSetting').onchange=e=>setSettings({...getSettings(),autoLock:e.target.checked});
-$('unlockBtn').onclick=unlock;
-$('changePassBtn').onclick=()=>{localStorage.removeItem(KEYS.pass);close('settingsOverlay');showLock(true)};
-$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(getLinks(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='f-links-backup.json';a.click();URL.revokeObjectURL(a.href)};
-$('importBtn').onclick=()=>$('importFile').click();
-$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const a=JSON.parse(await f.text());if(!Array.isArray(a))throw 0;setLinks(a);alert('Links imported.')}catch{alert('That backup file could not be imported.')}e.target.value=''};
+$('newNoteTop').onclick=newNote;$('newNoteFab').onclick=newNote;$('saveNote').onclick=saveNote;$('deleteNoteBtn').onclick=deleteNote;$('noteSearch').oninput=renderNotes;
+$('vaultAdd').onclick=addLink;$('vaultUrl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addLink()}});$('vaultSearch').oninput=renderLinks;
+$('saveLinkEdit').onclick=saveLinkEdit;$('deleteLinkEdit').onclick=()=>{if(linkEdit>=0){deleteLink(linkEdit);close('editLinkOverlay')}};
+$('exportLinks').onclick=exportLinks;$('clearLinks').onclick=()=>{if(confirm('Delete all saved links?'))setLinks([])};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o&&o.id!=='lockOverlay')close(o.id)}));
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&getSettings().autoLock&&unlocked)lock()});
-matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>{if(getSettings().theme==='system')applySettings()});
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)close(o.id)}));
 
-migrate();applySettings();render();
-unlocked=true;
-if(getSettings().lockOpen&&localStorage.getItem(KEYS.pass))showLock(false);
+/* secret access: long-press the F logo / Notes brand */
+$('secretTrigger').addEventListener('pointerdown',()=>pressTimer=setTimeout(()=>{renderLinks();open('vaultOverlay')},1200));
+['pointerup','pointerleave','pointercancel'].forEach(evt=>$('secretTrigger').addEventListener(evt,()=>clearTimeout(pressTimer)));
+
+renderNotes();renderLinks();
 </script>
 </body>
 </html>
