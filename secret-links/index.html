@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f1ea">
+<title>Flowboard</title>
+<style>
+:root{
+  --bg:#f4f1ea;--panel:#fbfaf7;--ink:#171816;--muted:#777a72;--line:#e5e0d6;
+  --accent:#324b3d;--accent2:#dfe8e1;--white:#fff;--danger:#a94a4a;--shadow:0 18px 60px rgba(41,35,27,.08);
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit} button{cursor:pointer} a{color:inherit;text-decoration:none}
+.app{max-width:1120px;margin:0 auto;padding:22px 18px 64px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:11px;user-select:none;-webkit-user-select:none}
+.mark{width:39px;height:39px;border-radius:14px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:-.04em;box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.brand-copy b{display:block;font-size:14px}.brand-copy span,.date{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:44px}
+.hero-main,.hero-side,.card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
+.hero-main{border-radius:30px;padding:42px;min-height:320px;display:flex;flex-direction:column;justify-content:space-between}
+.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.hero h1{font-size:clamp(42px,7vw,78px);line-height:.94;letter-spacing:-.065em;margin:14px 0 18px;max-width:720px;font-weight:750}
+.hero p{color:var(--muted);line-height:1.7;max-width:600px;margin:0;font-size:14px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent2);color:var(--accent);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:700;width:max-content;margin-top:32px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.hero-side{border-radius:30px;padding:26px;display:flex;flex-direction:column;justify-content:space-between}
+.big-number{font-size:70px;line-height:.9;letter-spacing:-.07em;font-weight:700}.hero-side small{color:var(--muted)}
+.mini-stack{display:grid;gap:10px}.mini-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:13px;font-size:13px}.mini-row span:last-child{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.card{border-radius:24px;padding:22px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.card small{color:var(--muted);font-size:11px}.card h3{font-size:19px;letter-spacing:-.035em;margin:0}.card p{color:var(--muted);font-size:12px;line-height:1.55;margin:8px 0 0}
+footer{text-align:center;color:#aaa69d;font-size:11px;padding-top:40px}
+.secret-hotspot{position:fixed;right:3px;bottom:3px;width:20px;height:20px;border:0;background:transparent;opacity:.01}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(20,20,18,.36);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
+.overlay.show{display:flex}
+.sheet{width:min(100%,440px);background:#fbfaf7;border:1px solid rgba(255,255,255,.7);border-radius:28px;padding:24px;box-shadow:0 28px 90px rgba(0,0,0,.2)}
+.vault{width:min(100%,850px);max-height:90vh;overflow:auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}
+.sheet-head h2{margin:0;font-size:22px;letter-spacing:-.045em}.x{border:1px solid var(--line);background:white;width:38px;height:38px;border-radius:13px;font-size:18px}
+.help{font-size:13px;color:var(--muted);line-height:1.6;margin:-5px 0 18px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}.field label{font-size:11px;color:var(--muted);font-weight:650}
+.field input{border:1px solid var(--line);background:white;border-radius:14px;padding:13px 14px;outline:none;color:var(--ink)}.field input:focus{border-color:#a9b3aa;box-shadow:0 0 0 3px rgba(50,75,61,.06)}
+.btn{border:0;border-radius:14px;padding:12px 15px;background:var(--ink);color:white;font-weight:700}.btn.soft{background:#ebe8df;color:var(--ink)}.btn.danger{background:#f4e6e5;color:var(--danger)}
+.error{min-height:18px;color:var(--danger);font-size:12px;margin-top:7px}
+.vault-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px}.vault-toolbar input{flex:1;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:white;outline:none}
+.addbox{border:1px solid var(--line);border-radius:20px;padding:15px;background:#f7f5ef;margin-bottom:16px}.form-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.link-card{background:white;border:1px solid var(--line);border-radius:18px;padding:13px;display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center}
+.ico{width:46px;height:46px;border-radius:13px;background:var(--accent2);color:var(--accent);display:grid;place-items:center;font-weight:800;overflow:hidden}.ico img{width:100%;height:100%;object-fit:cover}
+.meta{min-width:0}.meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}.meta span{display:block;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.row-actions{grid-column:1/-1;display:flex;gap:7px}.mini{border:1px solid var(--line);background:#faf9f6;border-radius:10px;padding:8px 10px;font-size:11px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px;padding:34px 16px}
+.vault-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr}.hero-main{padding:30px;min-height:300px}.hero-side{min-height:210px}.grid{grid-template-columns:1fr}.card{min-height:120px}
+  .form-grid,.list{grid-template-columns:1fr}.full{grid-column:auto}.overlay{align-items:flex-end;padding:0}.sheet{border-radius:28px 28px 0 0;max-height:92vh;overflow:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand" id="brandTrigger">
+      <div class="mark">F</div>
+      <div class="brand-copy"><b>Flowboard</b><span>personal dashboard</span></div>
+    </div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-main">
+      <div>
+        <div class="eyebrow">Today</div>
+        <h1>Make room for what matters.</h1>
+        <p>A minimal space for focus, light planning, and a calmer start to the day.</p>
+      </div>
+      <div class="pill"><span class="dot"></span> Ready for a fresh start</div>
+    </div>
+
+    <aside class="hero-side">
+      <div>
+        <small>Daily focus</small>
+        <div class="big-number">03</div>
+      </div>
+      <div class="mini-stack">
+        <div class="mini-row"><span>Priority</span><span>One thing at a time</span></div>
+        <div class="mini-row"><span>Mode</span><span>Quiet</span></div>
+        <div class="mini-row"><span>Reset</span><span>Anytime</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="grid">
+    <article class="card"><small>01 / FOCUS</small><div><h3>Start smaller.</h3><p>Reduce the task until the first move feels obvious.</p></div></article>
+    <article class="card"><small>02 / SPACE</small><div><h3>Keep some margin.</h3><p>Not every minute needs to be filled.</p></div></article>
+    <article class="card"><small>03 / REVIEW</small><div><h3>Close the loop.</h3><p>Finish with a quick check of what moved forward.</p></div></article>
+  </section>
+
+  <footer>Flowboard · a simple daily space</footer>
+</main>
+
+<button class="secret-hotspot" id="cornerTrigger" aria-label=" "></button>
+
+<div class="overlay" id="loginOverlay">
+  <section class="sheet">
+    <div class="sheet-head"><h2 id="loginTitle">Private space</h2><button class="x" data-close="loginOverlay">×</button></div>
+    <p class="help" id="loginHelp">Enter your password to open your saved links.</p>
+    <div class="field" id="setupWrap" style="display:none"><label>Create password</label><input id="newPass" type="password" autocomplete="new-password" placeholder="At least 4 characters"></div>
+    <div class="field"><label id="passLabel">Password</label><input id="pass" type="password" autocomplete="current-password" placeholder="Enter password"></div>
+    <button class="btn" id="unlock" style="width:100%">Unlock</button>
+    <div class="error" id="loginError"></div>
+  </section>
+</div>
+
+<div class="overlay" id="vaultOverlay">
+  <section class="sheet vault">
+    <div class="sheet-head"><h2>Your links</h2><button class="x" data-close="vaultOverlay">×</button></div>
+
+    <div class="vault-toolbar">
+      <input id="search" placeholder="Search saved links">
+      <button class="btn soft" id="lock">Lock</button>
+    </div>
+
+    <div class="addbox">
+      <div class="form-grid">
+        <div class="field"><label>Name</label><input id="name" placeholder="Dashboard"></div>
+        <div class="field"><label>URL</label><input id="url" placeholder="https://example.com"></div>
+        <div class="field full"><label>Thumbnail URL · optional</label><input id="thumb" placeholder="https://example.com/image.jpg"></div>
+        <div class="actions full"><button class="btn" id="save">Add link</button><button class="btn soft" id="cancel" style="display:none">Cancel edit</button></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="vault-foot">
+      <span id="count">0 links · stored on this device</span>
+      <button class="btn danger" id="clear">Clear all</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PASS_KEY='flowboard_pass_v2', LINKS_KEY='flowboard_links_v2';
+let pressTimer=null, editIndex=-1, unlocked=false;
+
+$('today').textContent=new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric'}).format(new Date());
+
+async function hash(value){
+  const data=new TextEncoder().encode(value);
+  const digest=await crypto.subtle.digest('SHA-256',data);
+  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function links(){try{return JSON.parse(localStorage.getItem(LINKS_KEY))||[]}catch{return[]}}
+function saveLinks(v){localStorage.setItem(LINKS_KEY,JSON.stringify(v));render()}
+function normalize(v){v=v.trim();if(!v)return'';return /^https?:\/\//i.test(v)?v:'https://'+v}
+function openLogin(){
+  const setup=!localStorage.getItem(PASS_KEY);
+  $('loginOverlay').classList.add('show');$('loginError').textContent='';$('pass').value='';$('newPass').value='';
+  $('setupWrap').style.display=setup?'flex':'none';
+  $('loginTitle').textContent=setup?'Create private space':'Private space';
+  $('loginHelp').textContent=setup?'Create a password for this browser.':'Enter your password to open your saved links.';
+  $('passLabel').textContent=setup?'Confirm password':'Password';
+  $('unlock').textContent=setup?'Create & open':'Unlock';
+  setTimeout(()=>$(setup?'newPass':'pass').focus(),100);
+}
+async function unlock(){
+  const stored=localStorage.getItem(PASS_KEY);
+  if(!stored){
+    const a=$('newPass').value,b=$('pass').value;
+    if(a.length<4){$('loginError').textContent='Use at least 4 characters.';return}
+    if(a!==b){$('loginError').textContent='Passwords do not match.';return}
+    localStorage.setItem(PASS_KEY,await hash(a));
+  }else if(await hash($('pass').value)!==stored){$('loginError').textContent='Incorrect password.';return}
+  unlocked=true;$('loginOverlay').classList.remove('show');$('vaultOverlay').classList.add('show');render();
+}
+function resetForm(){editIndex=-1;$('name').value='';$('url').value='';$('thumb').value='';$('save').textContent='Add link';$('cancel').style.display='none'}
+function render(){
+  const q=$('search').value.trim().toLowerCase(), all=links();
+  const filtered=all.map((x,i)=>({...x,_i:i})).filter(x=>!q||x.name.toLowerCase().includes(q)||x.url.toLowerCase().includes(q));
+  $('count').textContent=all.length+' '+(all.length===1?'link':'links')+' · stored on this device';
+  const list=$('list');list.innerHTML='';
+  if(!filtered.length){list.innerHTML='<div class="empty">'+(all.length?'No matching links.':'No links saved yet.')+'</div>';return}
+  filtered.forEach(item=>{
+    const card=document.createElement('div');card.className='link-card';
+    const ico=document.createElement('div');ico.className='ico';
+    if(item.thumb){const img=document.createElement('img');img.src=item.thumb;img.alt='';img.onerror=()=>{img.remove();ico.textContent=(item.name[0]||'↗').toUpperCase()};ico.appendChild(img)}
+    else ico.textContent=(item.name[0]||'↗').toUpperCase();
+    const meta=document.createElement('div');meta.className='meta';
+    const b=document.createElement('b');b.textContent=item.name;
+    const s=document.createElement('span');s.textContent=item.url;meta.append(b,s);
+    const acts=document.createElement('div');acts.className='row-actions';
+    [['Open',()=>window.open(item.url,'_blank','noopener,noreferrer')],['Edit',()=>edit(item._i)],['Delete',()=>remove(item._i)]].forEach(([t,fn])=>{const bt=document.createElement('button');bt.className='mini';bt.textContent=t;bt.onclick=fn;acts.appendChild(bt)});
+    card.append(ico,meta,acts);list.appendChild(card);
+  });
+}
+function add(){
+  const name=$('name').value.trim(),url=normalize($('url').value),thumb=$('thumb').value.trim();
+  if(!name||!url){alert('Add a name and URL.');return}
+  const a=links(),item={name,url,thumb};
+  if(editIndex>=0)a[editIndex]=item;else a.unshift(item);
+  saveLinks(a);resetForm();
+}
+function edit(i){const x=links()[i];if(!x)return;editIndex=i;$('name').value=x.name;$('url').value=x.url;$('thumb').value=x.thumb||'';$('save').textContent='Save changes';$('cancel').style.display='inline-block';$('name').focus()}
+function remove(i){if(!confirm('Delete this link?'))return;const a=links();a.splice(i,1);saveLinks(a);resetForm()}
+function close(id){$(id).classList.remove('show')}
+function lock(){unlocked=false;close('vaultOverlay');resetForm();$('search').value=''}
+
+$('brandTrigger').addEventListener('pointerdown',()=>pressTimer=setTimeout(openLogin,1100));
+['pointerup','pointerleave','pointercancel'].forEach(e=>$('brandTrigger').addEventListener(e,()=>clearTimeout(pressTimer)));
+$('cornerTrigger').onclick=openLogin;
+$('unlock').onclick=unlock;$('save').onclick=add;$('cancel').onclick=resetForm;$('lock').onclick=lock;$('search').oninput=render;
+$('clear').onclick=()=>{if(confirm('Delete every saved link from this device?')){localStorage.removeItem(LINKS_KEY);resetForm();render()}};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)close(o.id)}));
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='l'){e.preventDefault();openLogin()}
+  if(e.key==='Escape'){close('loginOverlay');close('vaultOverlay')}
+  if(e.key==='Enter'&&$('loginOverlay').classList.contains('show'))unlock();
+});
+</script>
+</body>
+</html>
