@@ -36,7 +36,7 @@ button{cursor:pointer;color:inherit}
 button,input,textarea,select{-webkit-tap-highlight-color:transparent}
 .app{max-width:980px;margin:0 auto;padding:20px 16px 32px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
-.brand{display:flex;align-items:center;gap:11px}
+.brand{display:flex;align-items:center;gap:11px;user-select:none;-webkit-user-select:none}
 .brand img{width:40px;height:40px;border-radius:11px;display:block}
 .brand-copy strong{display:block;font-size:15px;letter-spacing:-.02em}
 .brand-copy span{display:block;font-size:11px;color:var(--ink-58);margin-top:2px}
@@ -112,7 +112,7 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
 .private-card .actions{display:flex;gap:6px;margin-top:11px}
 .private-card .actions button{border:1px solid var(--ink-10);background:var(--ink-06);border-radius:9px;padding:7px 9px;font-size:10px}
 .private-note{font-size:10px;color:var(--ink-58);line-height:1.5;margin-top:12px}
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom));width:min(calc(100% - 20px),620px);height:62px;background:rgba(244,242,237,.96);backdrop-filter:blur(16px);border:1px solid var(--ink-10);border-radius:18px;box-shadow:0 14px 38px rgba(35,36,33,.10);display:grid;grid-template-columns:repeat(4,1fr);padding:5px;z-index:50}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom));width:min(calc(100% - 20px),620px);height:62px;background:rgba(244,242,237,.96);backdrop-filter:blur(16px);border:1px solid var(--ink-10);border-radius:18px;box-shadow:0 14px 38px rgba(35,36,33,.10);display:grid;grid-template-columns:repeat(3,1fr);padding:5px;z-index:50}
 .nav button{border:0;background:transparent;border-radius:13px;font-size:10px;color:var(--ink-58);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .nav button span:first-child{font-size:17px;line-height:1}
 .nav button.active{background:var(--ink);color:var(--paper)}
@@ -156,9 +156,9 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand">
+    <div class="brand" id="secretTrigger">
       <img src="./logo.svg" alt="F">
-      <div class="brand-copy"><strong>F Notes</strong><span>Notes, reminders & private space</span></div>
+      <div class="brand-copy"><strong>F Notes</strong><span>Notes & reminders</span></div>
     </div>
     <div class="top-actions">
       <button class="icon-btn" id="quickAddNote" title="New note">＋</button>
@@ -191,7 +191,10 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
   <section class="page" data-page="private">
     <div class="page-head">
       <div><h1>Private</h1><p>Encrypted notes and links.</p></div>
-      <button class="secondary-btn hidden" id="lockPrivate">Lock</button>
+      <div class="actions-row" style="margin-top:0">
+        <button class="secondary-btn" id="privateBack">Back</button>
+        <button class="secondary-btn hidden" id="lockPrivate">Lock</button>
+      </div>
     </div>
 
     <div class="private-lock" id="privateLockView">
@@ -281,7 +284,6 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
 <nav class="nav">
   <button class="active" data-nav="notes"><span>▤</span><span>Notes</span></button>
   <button data-nav="reminders"><span>◷</span><span>Reminders</span></button>
-  <button data-nav="private"><span>⌾</span><span>Private</span></button>
   <button data-nav="settings"><span>⚙</span><span>Settings</span></button>
 </nav>
 
@@ -358,6 +360,7 @@ let privateMode='notes';
 let privateEditId=null;
 let vaultKey=null;
 let vaultData={notes:[],links:[]};
+let secretPressTimer=null;
 
 function toast(msg){
   const el=$('toast');el.textContent=msg;el.classList.add('show');
@@ -387,7 +390,9 @@ function applySettings(){
   $('notificationsSetting').checked=s.notifications;
   $('notesGrid').classList.toggle('list',s.layout==='list');
 }
+let secretEntryAllowed=false;
 function navigate(page){
+  if(page==='private'&&!secretEntryAllowed)return;
   currentPage=page;
   document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
   document.querySelectorAll('[data-nav]').forEach(x=>x.classList.toggle('active',x.dataset.nav===page));
@@ -396,6 +401,19 @@ function navigate(page){
   if(page==='settings')applySettings();
 }
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>navigate(b.dataset.nav));
+
+/* Secret entry: press and hold the F logo for about 1.2 seconds. */
+$('secretTrigger').addEventListener('pointerdown',()=>{
+  secretPressTimer=setTimeout(()=>{
+    secretEntryAllowed=true;
+    navigate('private');
+    secretEntryAllowed=false;
+    refreshPrivateEntry();
+  },1200);
+});
+['pointerup','pointerleave','pointercancel'].forEach(evt=>{
+  $('secretTrigger').addEventListener(evt,()=>clearTimeout(secretPressTimer));
+});
 
 /* IndexedDB notes */
 const DB_NAME='FNotesDB',STORE='notes';
@@ -632,6 +650,7 @@ $('privateAccessBtn').onclick=async()=>{
   }catch{toast('Incorrect password')}
 };
 $('lockPrivate').onclick=()=>{vaultKey=null;vaultData={notes:[],links:[]};refreshPrivateEntry()};
+$('privateBack').onclick=()=>{vaultKey=null;vaultData={notes:[],links:[]};navigate('notes')};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&vaultKey){vaultKey=null;vaultData={notes:[],links:[]};refreshPrivateEntry()}});
 
 document.querySelectorAll('[data-private-type]').forEach(b=>b.onclick=()=>{
