@@ -163,9 +163,7 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
       <img src="./logo.svg" alt="F">
       <div class="brand-copy"><strong>F Notes</strong><span>Notes & reminders</span></div>
     </div>
-    <div class="top-actions">
-      <button class="icon-btn" id="quickAddNote" title="New note">＋</button>
-    </div>
+    <div class="top-actions"></div>
   </header>
 
   <section class="page active" data-page="notes">
@@ -235,7 +233,7 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
 
     <div class="settings-group">
       <div class="setting">
-        <div class="setting-copy" id="secretLayoutTrigger"><b>Layout</b><span>Grid or full-width list.</span></div>
+        <div class="setting-copy"><b>Layout</b><span>Grid or full-width list.</span></div>
         <select id="layoutSetting"><option value="grid">Grid</option><option value="list">List</option></select>
       </div>
       <div class="setting">
@@ -269,7 +267,7 @@ button,input,textarea,select{-webkit-tap-highlight-color:transparent}
       </div>
       <div class="palette">
         <div class="swatch" style="background:#F4F2ED"></div>
-        <div class="swatch" style="background:#232421"></div>
+        <button class="swatch" id="secretPaletteTrigger" aria-label="Charcoal color" style="background:#232421;padding:0"></button>
         <div class="swatch" style="background:#7C8570"></div>
       </div>
     </div>
@@ -420,8 +418,8 @@ function navigate(page){
 }
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>navigate(b.dataset.nav));
 
-/* Secret entry: tap the Layout label inside Settings. */
-$('secretLayoutTrigger').addEventListener('click',()=>{
+/* Secret entry: tap the charcoal swatch inside Settings. */
+$('secretPaletteTrigger').addEventListener('click',()=>{
   secretEntryAllowed=true;
   navigate('private');
   secretEntryAllowed=false;
@@ -539,7 +537,7 @@ async function deleteCurrentNote(){
   if(!editNoteId||!confirm('Delete this note?'))return;
   await dbDelete(editNoteId);closeModal('noteModal');await renderNotes();renderReminders();toast('Note deleted');
 }
-$('newNoteBtn').onclick=()=>openNoteEditor();$('quickAddNote').onclick=()=>openNoteEditor();$('saveNote').onclick=saveNote;$('deleteNote').onclick=deleteCurrentNote;
+$('newNoteBtn').onclick=()=>openNoteEditor();$('saveNote').onclick=saveNote;$('deleteNote').onclick=deleteCurrentNote;
 $('noteSearch').oninput=renderNotes;$('clearSearch').onclick=()=>{$('noteSearch').value='';renderNotes()};
 $('pickPhotos').onclick=()=>$('photoInput').click();
 $('photoInput').onchange=async e=>{
