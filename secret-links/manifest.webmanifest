@@ -1,12 +1,12 @@
 {
-  "name": "Notes",
-  "short_name": "Notes",
-  "description": "Simple personal notes",
+  "name": "F Notes",
+  "short_name": "F Notes",
+  "description": "Minimal notes, reminders and encrypted private space",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f4f4",
-  "theme_color": "#f4f4f4",
+  "background_color": "#F4F2ED",
+  "theme_color": "#F4F2ED",
   "icons": [
     {
       "src": "./logo.svg",
