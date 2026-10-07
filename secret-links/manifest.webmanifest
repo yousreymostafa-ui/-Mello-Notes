@@ -2,7 +2,7 @@
   "name": "F Notes",
   "short_name": "F Notes",
   "description": "Minimal notes, reminders and encrypted private space",
-  "start_url": "./?v=14",
+  "start_url": "./?v=16",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F4F2ED",
